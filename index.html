@@ -390,6 +390,11 @@ footer .wrap{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
 .r-card .btn-row{margin-top:4px}
 .r-card .btn{margin-top:6px}
 #aroBody>.note{margin-bottom:10px}
+#aroBody .word-panel{grid-template-columns:auto 1fr}
+#aroBody .word-panel .btn-row{grid-column:1/-1}
+#aroBody .word-panel .btn-row .btn{flex:1;justify-content:center}
+.ayah{transition:background-color .3s ease;border-radius:12px}
+.ayah.now{background:var(--lapis-soft);box-shadow:inset -4px 0 0 var(--gold)}
 @keyframes rise{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){body.app .block.on{animation:none}.ring .fg{transition:none}}
 </style>
@@ -1243,21 +1248,32 @@ function wAudio(s,a,w,text){
 }
 var WSUR=[1,112,113,114,108,103];
 function aroWords(s){
-  aroShow("ছোট অংশ পড়ুন","শব্দ ধরে ধরে পড়ার অনুশীলন। সূরা বাছুন, তারপর যেকোনো শব্দে চাপ দিয়ে তার উচ্চারণ শুনুন।",BACK,function(b){
-    var chips=el("div","w-chips"),area=el("div","ayat"),panel=el("div","word-panel"),pa=el("span","ar"),pm=el("div"),pb=el("b"),pn=el("span","note"),ps=el("button","btn ghost","শুনুন"),cur=null;
+  aroShow("ছোট অংশ পড়ুন","শব্দ ধরে ধরে পড়ার অনুশীলন। সূরা বাছুন, তারপর যেকোনো শব্দে চাপ দিয়ে তার উচ্চারণ শুনুন। পুরো আয়াত শুনতে নিচের বোতামে চাপ দিন।",BACK,function(b){
+    var chips=el("div","w-chips"),area=el("div","ayat"),panel=el("div","word-panel"),pa=el("span","ar"),pm=el("div"),pb=el("b"),pn=el("span","note"),ps=el("button","btn ghost","শব্দ শুনুন"),pf=el("button","btn","পুরো আয়াত শুনুন"),prow=el("div","btn-row"),fa=null,cur=null;
     WSUR.forEach(function(n){
       var c=el("button","chip"+(n===s?" on":""),SN[n-1]);c.type="button";
       c.addEventListener("click",function(){tone(3);aroWords(n);});chips.appendChild(c);
     });
     area.dir="rtl";area.lang="ar";pa.lang="ar";ps.type="button";
-    pm.appendChild(pb);pm.appendChild(pn);panel.appendChild(pa);panel.appendChild(pm);panel.appendChild(ps);
+    pm.appendChild(pb);pm.appendChild(pn);panel.appendChild(pa);panel.appendChild(pm);pf.type="button";prow.appendChild(ps);prow.appendChild(pf);panel.appendChild(prow);
     b.appendChild(chips);b.appendChild(area);b.appendChild(panel);
+    function fullAyah(g,row){
+      if(fa){fa.onended=null;fa.onerror=null;fa.pause();}
+      Array.prototype.forEach.call(area.children,function(r){r.classList.remove("now");});
+      row.classList.add("now");
+      fa=new Audio(QAYAH+g+".mp3");
+      fa.onended=function(){row.classList.remove("now");};
+      fa.onerror=function(){row.classList.remove("now");};
+      var p=fa.play();if(p&&p.catch)p.catch(function(){});
+      aroStop=function(){if(fa)fa.pause();};
+    }
     function pick(btn,w,play){
       if(cur)cur.setAttribute("aria-pressed","false");
       cur=btn;btn.setAttribute("aria-pressed","true");
       btn.classList.remove("pop");void btn.offsetWidth;btn.classList.add("pop");
       pa.textContent=w.t;pb.textContent=w.bn;pn.textContent=w.note;
       ps.onclick=function(){wAudio(s,w.a,w.i,w.t);};
+      pf.onclick=function(){fullAyah(w.g,btn.parentNode);};
       if(play)wAudio(s,w.a,w.i,w.t);
     }
     function draw(ayahs){
@@ -1265,7 +1281,7 @@ function aroWords(s){
       ayahs.forEach(function(ay,ai){
         var row=el("div","ayah"),num=el("span","num",bn(ay.n));num.lang="bn";
         ay.words.forEach(function(w,wi){
-          w.a=ay.n;w.i=wi+1;
+          w.a=ay.n;w.i=wi+1;w.g=ay.g;
           var x=el("button",null,w.t);x.type="button";x.setAttribute("aria-pressed","false");
           x.addEventListener("click",function(){pick(x,w,true);});
           row.appendChild(x);
@@ -1275,7 +1291,7 @@ function aroWords(s){
       });
     }
     if(s===1){
-      draw(F.map(function(ay,i){return {n:i+1,words:ay.map(function(w){return {t:w[0],bn:w[1],note:w[2]};})};}));
+      draw(F.map(function(ay,i){return {n:i+1,g:i+1,words:ay.map(function(w){return {t:w[0],bn:w[1],note:w[2]};})};}));
     }else{
       var ld=el("p","note","লোড হচ্ছে…");ld.dir="ltr";ld.lang="bn";area.appendChild(ld);
       aFetch(s).then(function(rows){
@@ -1286,7 +1302,7 @@ function aroWords(s){
             if(/[ء-يٱ]/.test(t)||!words.length)words.push({t:t,bn:"আয়াত "+bn(r.n)+"-এর অর্থ",note:r.bn});
             else words[words.length-1].t+=" "+t;
           });
-          return {n:r.n,words:words};
+          return {n:r.n,g:r.g,words:words};
         }));
       },function(){
         area.textContent="";
