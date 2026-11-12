@@ -747,14 +747,16 @@ function ask(){
     for(var f=1;opts.length<4;f++){if(opts.indexOf(pf[f][1])<0)opts.push(pf[f][1]);}
   }
   $("qText").textContent=q;$("qText").className="quiz-q "+(qBn?"bnq":"ar");$("qText").lang=qBn?"bn":"ar";
+  var hit=L.filter(function(x){return x[0]===q||x[0]===right||(Z+x[0]+Z)===q;})[0],say=mode==="H"?q:(hit?hit[2]:null);
   var box=$("qOpts");box.textContent="";
   (keep?opts:shuffle(opts)).forEach(function(o){
     var b=el("button",oAr?"ar":null,o);b.type="button";if(oAr)b.lang="ar";
     b.addEventListener("click",function(){
       if(answered)return;answered=true;
+      if(say)speak(say);
       Array.prototype.forEach.call(box.children,function(x){if(x.textContent===right)x.classList.add("right");});
-      if(o===right){score++;$("qMsg").textContent="ঠিক হয়েছে।";$("qMsg").style.color="var(--good)";}
-      else{b.classList.add("wrong");$("qMsg").textContent="ভুল হয়েছে। সঠিক উত্তর: "+right;$("qMsg").style.color="var(--bad)";}
+      if(o===right){score++;tone(1);$("qMsg").textContent="ঠিক হয়েছে।";$("qMsg").style.color="var(--good)";}
+      else{b.classList.add("wrong");tone(0);$("qMsg").textContent="ভুল হয়েছে। সঠিক উত্তর: "+right;$("qMsg").style.color="var(--bad)";}
       $("qCount").textContent="প্রশ্ন "+bn(qn+1)+" / ১০ । ঠিক হয়েছে "+bn(score);
     });
     box.appendChild(b);
@@ -766,6 +768,7 @@ function finish(){
   $("qMsg").style.color="";
   $("qMsg").textContent="১০টির মধ্যে "+bn(score)+"টি ঠিক হয়েছে। "+(score>=8?"পরের ধাপে যেতে পারেন।":"হরফগুলো আরেকবার দেখে আবার দিন।");
   $("qNext").textContent="আবার শুরু করুন";qn=-1;
+  tone(2);if(score>=8)confetti();
 }
 function restart(){qn=0;score=0;ask();}
 $("qNext").addEventListener("click",function(){
