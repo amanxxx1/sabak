@@ -387,6 +387,9 @@ body.app .block.on{animation:screenIn .34s cubic-bezier(.2,.8,.2,1)}
 }
 footer .wrap{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
 .btn.wa{background:#128C4A;border-color:#128C4A;color:#FFFFFF}
+.r-card .btn-row{margin-top:4px}
+.r-card .btn{margin-top:6px}
+#aroBody>.note{margin-bottom:10px}
 @keyframes rise{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){body.app .block.on{animation:none}.ring .fg{transition:none}}
 </style>
@@ -1045,15 +1048,41 @@ function rList(box,title,items,ordered,open){
   d.appendChild(l);box.appendChild(d);
 }
 function refCard(box,title,desc,src,s,from,to,back){
-  var c=el("div","r-card"),hold=el("div"),bt=el("button","btn ghost",from?"আয়াত ও অর্থ দেখুন":"সূরাটি পড়ুন");
+  var c=el("div","r-card"),hold=el("div"),row=el("div","btn-row"),bt=el("button","btn ghost",from?"আয়াত ও অর্থ দেখুন":"সূরাটি পড়ুন ও শুনুন"),ab=el("button","btn","অডিও শুনুন");
+  var data=null,els=[],au=null,idx=-1,playing=false;
   c.appendChild(el("h3",null,title));
   if(desc)c.appendChild(el("p",null,desc));
   c.appendChild(el("p","src",(src?"সূত্র: "+src+"। ":"")+"সূরা "+SN[s-1]+(from?", আয়াত "+bn(from)+(to>from?"–"+bn(to):""):"")));
-  bt.type="button";
-  bt.addEventListener("click",function(){
-    if(from){bt.hidden=true;aRows(hold,s,from,to);}else{aroSurah(s,back);}
-  });
-  c.appendChild(bt);c.appendChild(hold);box.appendChild(c);
+  bt.type="button";ab.type="button";
+  function load(then){
+    if(data){then();return;}
+    bt.hidden=true;
+    aRows(hold,s,from,to,function(dt,es){
+      data=dt;els=es;
+      es.forEach(function(x,i){x.addEventListener("click",function(){play(i);});});
+      then();
+    });
+  }
+  function stop(){
+    playing=false;if(au)au.pause();ab.textContent="অডিও শুনুন";
+    els.forEach(function(e){e.classList.remove("now");});
+  }
+  function play(i){
+    if(au){au.onended=null;au.onerror=null;au.pause();}
+    if(!data||i>=data.length){stop();return;}
+    if(aroStop&&aroStop!==stop)aroStop();
+    aroStop=stop;
+    idx=i;playing=true;ab.textContent="থামান";
+    els.forEach(function(e,k){e.classList.toggle("now",k===i);});
+    au=new Audio(QAYAH+data[i].g+".mp3");
+    au.onended=function(){if(playing)play(idx+1);};
+    au.onerror=function(){stop();};
+    var p=au.play();if(p&&p.catch)p.catch(function(){});
+  }
+  bt.addEventListener("click",function(){ if(from){load(function(){});}else{aroSurah(s,back);} });
+  ab.addEventListener("click",function(){ if(playing){stop();}else{load(function(){play(0);});} });
+  row.appendChild(bt);if(from)row.appendChild(ab);
+  c.appendChild(row);c.appendChild(hold);box.appendChild(c);
 }
 var NOTE="এই অংশ সংক্ষেপে, হানাফী মাযহাব অনুযায়ী লেখা। বিস্তারিত ও ভিন্ন অবস্থার মাসআলা একজন আলেমের কাছ থেকে জেনে নিন।";
 function aroSurahList(short){
@@ -1139,9 +1168,12 @@ function aroDua(){
     b.appendChild(el("h3","r-h","কুরআনের দোয়া"));
     QDUA.forEach(function(d){refCard(b,d[2],"","",d[0],d[1],d[1]);});
     b.appendChild(el("h3","r-h","প্রতিদিনের দোয়া"));
+    b.appendChild(el("p","note","এই ছয়টি দোয়ার শব্দ ফোনের নিজস্ব আরবি কণ্ঠ থেকে আসে। ফোনে আরবি কণ্ঠ না থাকলে শোনা যাবে না।"));
     DDUA.forEach(function(d){
       var c=el("div","r-card"),a=el("div","a-ar",d[1]);a.lang="ar";
-      c.appendChild(el("h3",null,d[0]));c.appendChild(a);c.appendChild(el("p",null,d[2]));b.appendChild(c);
+      c.appendChild(el("h3",null,d[0]));c.appendChild(a);c.appendChild(el("p",null,d[2]));
+      var sb=el("button","btn ghost","শুনুন");sb.type="button";sb.addEventListener("click",function(){speak(d[1]);});
+      c.appendChild(sb);b.appendChild(c);
     });
     b.appendChild(el("h3","r-h","জরুরি মাসআলা"));
     rList(b,"গোসলের ফরয তিনটি",["গড়গড়াসহ কুলি করা","নাকের ভেতর পানি পৌঁছানো","সারা শরীর এমনভাবে ধোয়া যেন চুল পরিমাণ জায়গাও শুকনো না থাকে"],true);
