@@ -220,6 +220,32 @@ footer{padding:28px 0 48px;color:var(--muted);font-size:.92rem}
   .tabs svg{width:24px;height:24px}
   .tabs a[aria-current="page"]{color:var(--lapis);background:var(--lapis-soft);font-weight:600}
 }
+.btn[hidden]{display:none}
+.game{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:18px;max-width:560px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow)}
+.game-top{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-size:.9rem;font-weight:500;padding:2px 12px;border-radius:99px;background:var(--lapis-soft);color:var(--lapis);font-variant-numeric:tabular-nums}
+.chip.gold{background:transparent;border:1px solid var(--gold);color:var(--gold)}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.card{aspect-ratio:3/4;border:0;padding:0;border-radius:16px;position:relative;background:linear-gradient(160deg,var(--stage-a),var(--stage-b));color:var(--on-stage);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:1.05rem}
+.card::before{content:"";position:absolute;top:8px;right:8px;bottom:8px;left:8px;border:1px solid var(--stage-line);border-radius:10px}
+.card span{visibility:hidden}
+.card.up{background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 2px var(--lapis);animation:flip .25s}
+.card.up::before{display:none}
+.card.up span{visibility:visible}
+.card.ar-face span{font-family:var(--f-ar);font-size:44px;line-height:1.4;color:var(--lapis)}
+.card.done{box-shadow:inset 0 0 0 2px var(--good);opacity:.7;cursor:default}
+.game-msg{min-height:1.7em;font-weight:600;color:var(--good)}
+@keyframes flip{from{transform:rotateY(90deg)}to{transform:none}}
+@media (max-width:720px){
+  .tabs{grid-template-columns:repeat(6,1fr)}
+  .tabs a{font-size:.72rem}
+  .game{padding:14px}
+  .cards{gap:8px}
+  .card{font-size:.98rem;border-radius:14px}
+  .card.ar-face span{font-size:38px}
+  .game .btn-row .btn{width:100%;justify-content:center;min-height:50px;border-radius:14px}
+}
+@media (prefers-reduced-motion:reduce){.card.up{animation:none}}
 @keyframes rise{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){body.app .block.on{animation:none}.ring .fg{transition:none}}
 </style>
@@ -234,6 +260,7 @@ footer{padding:28px 0 48px;color:var(--muted);font-size:.92rem}
       <a href="#tofat">গুলিয়ে ফেলা হরফ</a>
       <a href="#fatiha">ফাতিহা</a>
       <a href="#quiz">কুইজ</a>
+      <a href="#khela">খেলা</a>
       <a href="#path">শেখার পথ</a>
     </nav>
     <a class="ring" href="#path" aria-label="শেখার পথের অগ্রগতি"><span id="ringText"></span><svg viewBox="0 0 36 36" aria-hidden="true"><circle class="tr" cx="18" cy="18" r="15" fill="none" stroke-width="4"></circle><circle class="fg" id="ringArc" cx="18" cy="18" r="15" fill="none" stroke-width="4" stroke-linecap="round" stroke-dasharray="94.25" stroke-dashoffset="94.25" transform="rotate(-90 18 18)"></circle></svg></a>
@@ -346,6 +373,28 @@ footer{padding:28px 0 48px;color:var(--muted);font-size:.92rem}
   </div>
 </section>
 
+<section class="block" id="khela">
+  <div class="wrap">
+    <div class="block-head">
+      <h2>খেলা: জোড়া মেলাও</h2>
+      <p>কার্ড উল্টাও, আরবি হরফের সাথে তার বাংলা নাম মেলাও। যত কম চালে পারবে, তত বেশি তারা পাবে। ধাপ কখনো শেষ হয় না!</p>
+    </div>
+    <div class="game">
+      <div class="game-top">
+        <span class="chip" id="gLevel"></span>
+        <span class="chip" id="gMoves"></span>
+        <span class="chip gold" id="gStars"></span>
+      </div>
+      <div class="cards" id="gCards"></div>
+      <div class="game-msg" id="gMsg" aria-live="polite"></div>
+      <div class="btn-row">
+        <button class="btn" id="gNext" type="button" hidden>পরের ধাপে যাও</button>
+        <button class="btn ghost" id="gAgain" type="button">কার্ড নতুন করে সাজাও</button>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="block" id="path">
   <div class="wrap">
     <div class="block-head">
@@ -364,6 +413,7 @@ footer{padding:28px 0 48px;color:var(--muted);font-size:.92rem}
   <a href="#harakat"><span class="ic" lang="ar">بَ</span>হরকত</a>
   <a href="#fatiha"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10 5 7 4.5 4 5v13c3-.5 6 0 8 1.5c2-1.5 5-2 8-1.5V5c-3-.5-6 0-8 1.5z"></path><path d="M12 6.5v13"></path></svg></span>ফাতিহা</a>
   <a href="#quiz"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l3 3 5-6"></path></svg></span>কুইজ</a>
+  <a href="#khela"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 16.9 6.7 19.6l1-5.8L3.5 9.7l5.9-.9z"></path></svg></span>খেলা</a>
   <a href="#path"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21V4"></path><path d="M6 5h11l-2 3.5l2 3.5H6"></path></svg></span>পথ</a>
 </nav>
 
@@ -591,6 +641,77 @@ $("modeL").addEventListener("click",function(){setMode("L");});
 $("modeH").addEventListener("click",function(){setMode("H");});
 restart();
 
+/* ---------- game: match pairs ---------- */
+var GKEY="sabak-game",G={level:1,stars:0};
+try{var gs=JSON.parse(localStorage.getItem(GKEY)||"null");if(gs&&gs.level>0){G={level:gs.level,stars:gs.stars||0};}}catch(e){}
+var CHEER=["সাবাশ!","দারুণ হয়েছে!","মাশাআল্লাহ, চমৎকার!","বাহ, তুমি তো পারো!","একদম ঠিক!"];
+var gOpen=[],gMoves=0,gLeft=0,gLock=false;
+function gPairs(level){
+  var out=[],i,seen={};
+  if(level<=5){
+    for(i=0;i<6;i++){var l=L[((level-1)*6+i)%L.length];out.push([l[0],l[1]]);}
+  }else if(level%2===0){
+    var ls=shuffle(L.filter(function(x){return x[0]!=="ا";}));
+    for(i=0;out.length<6&&i<ls.length;i++){var m=Math.floor(Math.random()*6),b=sylBn(ls[i],m);if(!seen[b]){seen[b]=1;out.push([sylAr(ls[i],m),b]);}}
+  }else{
+    var pick=shuffle(L.slice());
+    for(i=0;out.length<6&&i<pick.length;i++){if(!seen[pick[i][1]]){seen[pick[i][1]]=1;out.push([pick[i][0],pick[i][1]]);}}
+  }
+  return out;
+}
+function gHud(){
+  $("gLevel").textContent="ধাপ "+bn(G.level);
+  $("gMoves").textContent="চাল "+bn(gMoves);
+  $("gStars").textContent="★ "+bn(G.stars);
+}
+function gStart(){
+  var pairs=gPairs(G.level),deck=[];
+  pairs.forEach(function(p,i){deck.push({id:i,t:p[0],ar:1});deck.push({id:i,t:p[1],ar:0});});
+  shuffle(deck);
+  gOpen=[];gMoves=0;gLeft=pairs.length;gLock=false;
+  var box=$("gCards");box.textContent="";
+  deck.forEach(function(c){
+    var b=el("button","card"+(c.ar?" ar-face":""));b.type="button";b.setAttribute("aria-label","উল্টানো কার্ড");
+    var s=el("span",null,c.t);if(c.ar)s.lang="ar";b.appendChild(s);
+    b.addEventListener("click",function(){gFlip(b,c);});
+    box.appendChild(b);
+  });
+  $("gMsg").textContent="";$("gNext").hidden=true;$("gAgain").hidden=false;gHud();
+}
+function gFlip(b,c){
+  if(gLock||b.classList.contains("up"))return;
+  b.classList.add("up");b.setAttribute("aria-label",c.t);
+  gOpen.push({b:b,c:c});
+  if(gOpen.length<2)return;
+  gMoves++;gHud();
+  var x=gOpen[0],y=gOpen[1];gOpen=[];
+  if(x.c.id===y.c.id){
+    x.b.classList.add("done");y.b.classList.add("done");x.b.disabled=true;y.b.disabled=true;
+    gLeft--;
+    $("gMsg").textContent=CHEER[Math.floor(Math.random()*CHEER.length)];
+    if(gLeft===0)gWin();
+  }else{
+    gLock=true;$("gMsg").textContent="";
+    setTimeout(function(){
+      x.b.classList.remove("up");y.b.classList.remove("up");
+      x.b.setAttribute("aria-label","উল্টানো কার্ড");y.b.setAttribute("aria-label","উল্টানো কার্ড");
+      gLock=false;
+    },800);
+  }
+}
+function gWin(){
+  var st=gMoves<=9?3:gMoves<=13?2:1,stars="";
+  for(var i=0;i<st;i++)stars+="★";
+  $("gMsg").textContent="ধাপ "+bn(G.level)+" শেষ! "+bn(gMoves)+" চালে মিলিয়েছ, পেলে "+stars;
+  G.stars+=st;G.level++;
+  try{localStorage.setItem(GKEY,JSON.stringify(G));}catch(e){}
+  $("gStars").textContent="★ "+bn(G.stars);
+  $("gNext").hidden=false;$("gAgain").hidden=true;
+}
+$("gNext").addEventListener("click",gStart);
+$("gAgain").addEventListener("click",gStart);
+gStart();
+
 /* ---------- path ---------- */
 var STEPS=[
 ["হরফ চেনা ও মাখরাজ","২৯টি হরফের নাম, বের হওয়ার জায়গা, মোটা না চিকন।",1],
@@ -621,7 +742,7 @@ STEPS.forEach(function(s,i){
 bar();
 
 /* ---------- phone app screens ---------- */
-var SCREEN={horof:"horof",tofat:"horof",harakat:"harakat",fatiha:"fatiha",quiz:"quiz",path:"path"};
+var SCREEN={horof:"horof",tofat:"horof",harakat:"harakat",fatiha:"fatiha",quiz:"quiz",khela:"khela",path:"path"};
 var mq=window.matchMedia("(max-width:720px)");
 function route(){
   var h=(location.hash||"#horof").slice(1), s=SCREEN[h]||"horof", app=mq.matches;
