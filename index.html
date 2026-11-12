@@ -638,10 +638,14 @@ function speakBrowser(text){
   try{
     if(!("speechSynthesis" in window)){note.textContent="এই ব্রাউজারে শব্দ চালানো যায় না। অন্য ব্রাউজারে খুলে দেখুন।";return;}
     var vs=window.speechSynthesis.getVoices()||[];
-    var v=vs.filter(function(x){return /^ar/i.test(x.lang);})[0];
+    var ars=vs.filter(function(x){return /^ar/i.test(x.lang);});
+    var FEM=/female|woman|laila|layla|leila|hoda|huda|salma|zariyah|amira|fatima|hala|mariam|maryam|lana|sana|amal|aisha|rana|mona|noura|reem/i,MALE=/(^|[^e])male|maged|majed|naayf|hamed|tarik|tariq|shakir|bassel|omar|ahmad|hamdan|fahed|rami/i;
+    var fem=ars.filter(function(x){return FEM.test(x.name);})[0];
+    var v=fem||ars.filter(function(x){return !MALE.test(x.name);})[0]||ars[0];
     if(!v){note.textContent="এই ডিভাইসে আরবি কণ্ঠ নেই। ফোনের সেটিংস থেকে আরবি Text-to-speech ভাষা যোগ করলে শোনা যাবে।";return;}
     var u=new SpeechSynthesisUtterance(text);
     u.lang=v?v.lang:"ar-SA"; if(v)u.voice=v; u.rate=0.7;
+    u.pitch=fem?1:(MALE.test(v.name)?1.45:1.1);
     window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
   }catch(e){note.textContent="শব্দ চালানো গেল না। আবার চাপ দিন।";}
 }
