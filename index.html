@@ -360,6 +360,18 @@ body.app .block.on{animation:screenIn .34s cubic-bezier(.2,.8,.2,1)}
 @media (prefers-reduced-motion:reduce){
   body::before,.stage,.stage::after,.big.swap,.tabs a[aria-current="page"] .ic,body.app .block.on,.block.on .marks .mark,.aro-in .aro-opt,.aro-in .s-item,.aro-in .r-card,.sheet .aro-opt,.j-big.bnb,.j-opts button.right,.opts button.right,.j-opts button.wrong,.opts button.wrong,.ayah button.pop{animation:none}
 }
+.s-path{display:flex;flex-direction:column;gap:8px;max-width:560px;margin-top:14px}
+.s-row{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 14px;transition:transform .16s ease}
+.s-row:active{transform:scale(.97)}
+.s-row .n{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;background:var(--lapis-soft);color:var(--lapis)}
+.s-row.done .n{background:var(--good);color:var(--surface)}
+.s-row.next{border-color:var(--gold);box-shadow:var(--shadow)}
+.s-row b{display:block}
+.s-row small{color:var(--muted)}
+.s-row .state{margin-top:0}
+.s-row .chip{white-space:nowrap}
+.s-row.new{animation:itemIn .6s cubic-bezier(.2,.8,.2,1)}
+@media (prefers-reduced-motion:reduce){.s-row.new{animation:none}}
 @keyframes rise{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){body.app .block.on{animation:none}.ring .fg{transition:none}}
 </style>
@@ -477,7 +489,7 @@ body.app .block.on{animation:screenIn .34s cubic-bezier(.2,.8,.2,1)}
   <div class="wrap">
     <div class="block-head">
       <h2>ঝটপট পাঠ</h2>
-      <p>প্রতি পাঠে তিনটি নতুন হরফ। আগে দেখো আর শোনো, তারপর ছোট ছোট প্রশ্নের উত্তর দাও। ভুল হলে প্রশ্নটি একটু পরে আবার ফিরে আসবে।</p>
+      <p>প্রতি সবকে তিনটি নতুন হরফ। আগে দেখো আর শোনো, তারপর ছোট ছোট প্রশ্নের উত্তর দাও। ভুল হলে প্রশ্নটি একটু পরে আবার ফিরে আসবে।</p>
     </div>
     <div class="lesson">
       <div class="game-top">
@@ -490,6 +502,7 @@ body.app .block.on{animation:screenIn .34s cubic-bezier(.2,.8,.2,1)}
       <div class="game-msg" id="jMsg" aria-live="polite"></div>
       <div class="btn-row"><button class="btn" id="jGo" type="button"></button></div>
     </div>
+    <div class="s-path" id="jList"></div>
   </div>
 </section>
 
@@ -852,7 +865,7 @@ function tone(kind){
 /* ---------- quick lessons: teach three, then ask; misses come back ---------- */
 var JKEY="sabak-lesson",J={lesson:1,xp:0};
 try{var js=JSON.parse(localStorage.getItem(JKEY)||"null");if(js&&js.lesson>0){J={lesson:js.lesson,xp:js.xp||0};}}catch(e){}
-var jq=[],jTotal=0,jDone=0,jCombo=0,jGain=0,jTeach=[],jItems=[],jState="home";
+var jCur=1,jq=[],jTotal=0,jDone=0,jCombo=0,jGain=0,jTeach=[],jItems=[],jState="home";
 function jCanSpeak(){
   if(claudeTts)return true;
   try{return (window.speechSynthesis.getVoices()||[]).some(function(x){return /^ar/i.test(x.lang);});}catch(e){return false;}
@@ -869,14 +882,14 @@ function jItemsFor(n){
   return {fresh:fresh,pool:pool};
 }
 function jBuild(){
-  var s=jItemsFor(J.lesson),qs=[],can=jCanSpeak();
+  var s=jItemsFor(jCur),qs=[],can=jCanSpeak();
   jItems=s.pool;jTeach=s.fresh.slice();
   s.fresh.forEach(function(it){qs.push({t:0,it:it});qs.push({t:1,it:it});qs.push({t:2,it:it});if(can)qs.push({t:3,it:it});});
   shuffle(s.pool.filter(function(it){return s.fresh.indexOf(it)<0;})).slice(0,3).forEach(function(it){qs.push({t:Math.floor(Math.random()*2),it:it});});
   jq=shuffle(qs);jTotal=jq.length;jDone=0;jCombo=0;jGain=0;
 }
 function jHud(){
-  $("jLesson").textContent="পাঠ "+bn(J.lesson);
+  $("jLesson").textContent="সবক "+bn(jCur);
   $("jCombo").textContent="টানা ঠিক "+bn(jCombo);
   $("jXp").textContent="★ "+bn(J.xp);
   $("jBar").style.width=(jTotal?jDone/jTotal*100:0)+"%";
@@ -889,14 +902,31 @@ function jOpts(it){
   }
   return shuffle(o);
 }
-function jHome(){
-  jState="home";jBuild();
+function jList(fresh){
+  var box=$("jList");box.textContent="";
+  for(var i=1;i<=J.lesson;i++){(function(n){
+    var done=n<J.lesson,r=el("button","s-row"+(done?" done":" next")+(fresh&&n===J.lesson?" new":"")),t=el("span");
+    r.type="button";
+    r.appendChild(el("span","n",done?"✓":bn(n)));
+    t.appendChild(el("b",null,"সবক "+bn(n)));
+    t.appendChild(el("small",null,n<=10?jItemsFor(n).fresh.map(function(it){return it.bn;}).join(", "):"হরকতসহ হরফের অনুশীলন"));
+    r.appendChild(t);
+    r.appendChild(el("span",done?"state":"chip gold",done?"শেষ হয়েছে":"এখন পড়ো"));
+    r.addEventListener("click",function(){
+      jHome(n);
+      try{document.querySelector(".lesson").scrollIntoView({block:"center",behavior:"smooth"});}catch(e){}
+    });
+    box.appendChild(r);
+  })(i);}
+}
+function jHome(n){
+  jCur=n||J.lesson;jState="home";jBuild();jList(false);
   var b=$("jBody");b.textContent="";
-  b.appendChild(el("p","j-q","এই পাঠে শিখবে"));
+  b.appendChild(el("p","j-q","এই সবকে শিখবে"));
   var row=el("div","j-row");
   jTeach.forEach(function(it){var t=el("div","j-tile");var a=el("span","ar",it.ar);a.lang="ar";t.appendChild(a);t.appendChild(el("small",null,it.bn));row.appendChild(t);});
   b.appendChild(row);
-  $("jMsg").textContent="";$("jGo").textContent="পাঠ শুরু করো";$("jGo").hidden=false;jHud();
+  $("jMsg").textContent="";$("jGo").textContent="সবক শুরু করো";$("jGo").hidden=false;jHud();
 }
 function jTeachNext(){
   jState="teach";
@@ -964,13 +994,14 @@ function jNext(){ if(jq.length){jAsk();}else{jFinish();} }
 function jFinish(){
   jState="done";
   var b=$("jBody");b.textContent="";
-  J.xp+=jGain;J.lesson++;
+  var adv=jCur===J.lesson;
+  J.xp+=jGain;if(adv)J.lesson++;
   try{localStorage.setItem(JKEY,JSON.stringify(J));}catch(e){}
   tone(2);confetti();
   b.appendChild(el("div","j-big bnb","★ +"+bn(jGain)));
-  b.appendChild(el("p","j-q","পাঠ "+bn(J.lesson-1)+" শেষ! দারুণ করেছ।"));
-  $("jMsg").textContent="";$("jGo").textContent="পরের পাঠে যাও";$("jGo").hidden=false;
-  jDone=jTotal;jHud();$("jLesson").textContent="পাঠ "+bn(J.lesson-1)+" শেষ";
+  b.appendChild(el("p","j-q","সবক "+bn(jCur)+" শেষ! "+(adv?"নিচে সবক "+bn(J.lesson)+" এসে গেছে।":"দারুণ করেছ।")));
+  $("jMsg").textContent="";$("jGo").textContent=adv?"সবক "+bn(J.lesson)+" শুরু করো":"চলতি সবকে ফিরে যাও";$("jGo").hidden=false;
+  jDone=jTotal;jHud();$("jLesson").textContent="সবক "+bn(jCur)+" শেষ";jList(adv);
 }
 $("jGo").addEventListener("click",function(){
   if(jState==="home"||jState==="teach"){ if(jTeach.length){jTeachNext();}else{jAsk();} }
