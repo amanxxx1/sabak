@@ -395,6 +395,18 @@ footer .wrap{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
 #aroBody .word-panel .btn-row .btn{flex:1;justify-content:center}
 .ayah{transition:background-color .3s ease;border-radius:12px}
 .ayah.now{background:var(--lapis-soft);box-shadow:inset -4px 0 0 var(--gold)}
+.p-text{display:flex;flex-direction:column}
+.p-text span{color:var(--muted);font-size:.95rem}
+.p-mark{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--lapis-soft);color:var(--lapis);font-weight:600;font-size:.9rem;margin-top:2px}
+.p-mark.ok{background:var(--good);color:var(--surface)}
+.quiz-q.ar.long{font-size:52px;line-height:1.8}
+.ex-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.ex{display:flex;flex-direction:column;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:4px 14px 8px;transition:transform .16s ease}
+.ex:active{transform:scale(.94)}
+.ex .ar{font-size:34px;color:var(--lapis);line-height:1.9}
+.ex small{color:var(--muted)}
+#exBody .aro-menu{max-width:760px}
+#exBody .quiz{margin-top:4px}
 @keyframes rise{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){body.app .block.on{animation:none}.ring .fg{transition:none}}
 </style>
@@ -408,6 +420,7 @@ footer .wrap{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
       <a href="#harakat">হরকত</a>
       <a href="#tofat">গুলিয়ে ফেলা হরফ</a>
       <a href="#quiz">কুইজ</a>
+      <a href="#exam">পরীক্ষা</a>
       <a href="#jhotpot">ঝটপট পাঠ</a>
       <a href="#path">শেখার পথ</a>
       <a href="#aro">আরো শিখুন</a>
@@ -423,7 +436,7 @@ footer .wrap{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
       <div class="hero-copy">
         <h1>আরবি হরফ চিনুন, শুদ্ধ করে কুরআন পড়ুন</h1>
         <p>সবক বাংলাভাষীদের জন্য কুরআন পড়া শেখার মাধ্যম। প্রতিটি হরফের নাম, মুখের কোন জায়গা থেকে বের হয় আর শব্দের ভেতরে তার চেহারা কেমন হয়, সব বাংলায় লেখা।</p>
-        <div class="jump"><a class="chip" href="#harakat">হরকত দেখুন</a><a class="chip" href="#tofat">গুলিয়ে ফেলা হরফ</a></div>
+        <div class="jump"><a class="chip" href="#harakat">হরকত দেখুন</a><a class="chip" href="#niyom">পড়ার নিয়ম</a><a class="chip" href="#tofat">গুলিয়ে ফেলা হরফ</a></div>
         <ul>
           <li>কোনো পাঠ তালাবদ্ধ নয়, যেখান থেকে ইচ্ছা শুরু করুন</li>
           <li>হরফে চাপ দিলেই মাখরাজ, রূপ আর হরকত বদলে যায়</li>
@@ -465,11 +478,16 @@ footer .wrap{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
       <p>উপরে যে হরফ বেছেছেন, তার সাথে ছয়টি চিহ্ন বসালে কী পড়তে হয় দেখুন। ঘরে চাপ দিলে শোনা যাবে। হরকত তাড়াতাড়ি পড়তে হয়, টানা যায় না।</p>
     </div>
     <div class="marks" id="marks"></div>
-    <div class="rules">
-      <div class="rule"><h3>সুকুন (জযম)</h3><span class="ar" lang="ar">أَبْ</span><p>পড়ুন “আব্”। সুকুনওয়ালা হরফ আগের হরফের সাথে মিলে একবার উচ্চারিত হয়।</p></div>
-      <div class="rule"><h3>তাশদীদ</h3><span class="ar" lang="ar">رَبِّ</span><p>পড়ুন “রব্বি”। তাশদীদওয়ালা হরফ দুইবার পড়া হয়: একবার সুকুনে, একবার হরকতে।</p></div>
-      <div class="rule"><h3>মদ (টেনে পড়া)</h3><span class="ar" lang="ar">بَا &nbsp; بِي &nbsp; بُو</span><p>যবরের পর আলিফ, যেরের পর ইয়া, পেশের পর ওয়াও এলে এক আলিফ পরিমাণ টানুন।</p></div>
+  </div>
+</section>
+
+<section class="block" id="niyom">
+  <div class="wrap">
+    <div class="block-head">
+      <h2>পড়ার নিয়ম</h2>
+      <p>সুকুন, তাশদীদ, মদ, খাড়া হরকত, গুন্নাহ, নূন সাকিন ও মীম সাকিন। উদাহরণে চাপ দিলে শোনা যাবে।</p>
     </div>
+    <div id="niyomBody"></div>
   </div>
 </section>
 
@@ -491,6 +509,7 @@ footer .wrap{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
     <div class="block-head">
       <h2>কুইজ</h2>
       <p>দশটি প্রশ্ন। যতবার খুশি দিন, প্রতিবার নতুন প্রশ্ন আসবে।</p>
+      <div class="jump"><a class="chip" href="#exam">পরীক্ষা দিন</a></div>
     </div>
     <div class="quiz">
       <div class="quiz-top">
@@ -503,6 +522,16 @@ footer .wrap{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
       <div class="quiz-msg" id="qMsg" aria-live="polite"></div>
       <div class="btn-row"><button class="btn" id="qNext" type="button">পরের প্রশ্ন</button></div>
     </div>
+  </div>
+</section>
+
+<section class="block" id="exam">
+  <div class="wrap">
+    <div class="block-head">
+      <h2>পরীক্ষা</h2>
+      <p>সময় ধরে তিনটি পরীক্ষা: ৫, ১০ ও ২০ মিনিট। নাম লিখে শুরু করো, শেষে নম্বর দেখাবে।</p>
+    </div>
+    <div id="exBody"></div>
   </div>
 </section>
 
@@ -531,7 +560,7 @@ footer .wrap{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
   <div class="wrap">
     <div class="block-head">
       <h2>শেখার পথ</h2>
-      <p>দশটি ধাপ ক্রমানুসারে। শেষ হলে টিক দিন, এই ব্রাউজারে মনে রাখা হবে।</p>
+      <p>দশটি ধাপ। কাজ শেষ হলে টিক নিজে থেকে পড়ে; অগ্রগতি এই ব্রাউজারে মনে রাখা হয়।</p>
       <div class="bar" aria-hidden="true"><i id="bar"></i></div>
       <span class="note" id="barText"></span>
     </div>
@@ -731,62 +760,77 @@ var F=[
 ];
 /* ---------- quiz ---------- */
 var mode="L",qn=0,score=0,answered=false;
-var QP={L:"এই হরফের নাম কী?",R:"কোনটি এই হরফ?",F:"শব্দের মাঝখানের এই রূপটি কোন হরফের?",H:"এটি কীভাবে পড়তে হয়?",M:"এই হরফ মোটা না চিকন?",Z:"এই হরফ কোথা থেকে বের হয়?"};
+var QP={L:"এই হরফের নাম কী?",R:"কোনটি এই হরফ?",F:"শব্দের মাঝখানের এই রূপটি কোন হরফের?",H:"এটি কীভাবে পড়তে হয়?",M:"এই হরফ মোটা না চিকন?",Z:"এই হরফ কোথা থেকে বের হয়?",S:"এখানে কোন চিহ্ন আছে?",T:"নূন সাকিন বা তানভীনের কোন নিয়ম?"};
+var SQ=[["أَبْ",0],["مِنْ",0],["قُلْ",0],["رَبِّ",1],["حَقَّ",1],["كُلُّ",1],["بَا",2],["بِي",2],["بُو",2],["قَالَ",2],["ذٰلِكَ",3],["بِهٖ",3],["لَهٗ",3]];
+var SG4=["সুকুন","তাশদীদ","মদের হরফ","খাড়া হরকত"];
+var TQ=[["مِنْ هَادٍ",0],["أَنْعَمْتَ",0],["مَنْ آمَنَ",0],["مِنْ خَوْفٍ",0],["عَلِيمٌ حَكِيمٌ",0],["مَنْ يَقُولُ",1],["مِنْ رَبِّهِمْ",1],["مِنْ مَالٍ",1],["مِنْ وَلِيٍّ",1],["هُدًى لِلْمُتَّقِينَ",1],["مِنْ بَعْدِ",2],["أَنْبِئْهُمْ",2],["سَمِيعٌ بَصِيرٌ",2],["أَنْتُمْ",3],["مِنْ قَبْلُ",3],["كُنْتُمْ",3],["مَنْ كَانَ",3],["يَنْصُرُ",3],["عِنْدَ",3]];
+var TG4=["ইযহার","ইদগাম","ইকলাব","ইখফা"];
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
-function ask(){
-  answered=false;$("qMsg").textContent="";$("qMsg").style.color="";
-  $("qCount").textContent="প্রশ্ন "+bn(qn+1)+" / ১০ । ঠিক হয়েছে "+bn(score);
-  $("qNext").textContent=qn===9?"ফলাফল দেখুন":"পরের প্রশ্ন";
-  var q,right,opts=[],qBn=false,oAr=false,keep=false;
-  $("qAsk").textContent=QP[mode];
-  if(mode==="L"){
-    var pick=shuffle(L.slice());
-    q=pick[0][0];right=pick[0][1];opts=[right];
-    for(var i=1;opts.length<4;i++){if(opts.indexOf(pick[i][1])<0)opts.push(pick[i][1]);}
-  }else if(mode==="H"){
-    var ls=shuffle(L.filter(function(l){return l[0]!=="ا";}));
-    var l=ls[0],m=Math.floor(Math.random()*6);
-    q=sylAr(l,m);right=sylBn(l,m);opts=[right];
-    shuffle([0,1,2,3,4,5]).forEach(function(k){var s=sylBn(l,k);if(opts.length<3&&opts.indexOf(s)<0)opts.push(s);});
-    for(var k=1;opts.length<4;k++){var s2=sylBn(ls[k],m);if(opts.indexOf(s2)<0)opts.push(s2);}
-  }else if(mode==="R"){
-    var pr=shuffle(L.slice());
-    q=pr[0][1];right=pr[0][0];opts=[right];qBn=true;oAr=true;
-    for(var r=1;opts.length<4;r++){if(pr[r][1]!==q)opts.push(pr[r][0]);}
-  }else if(mode==="M"){
-    var pm=shuffle(L.filter(function(l){return "ارل".indexOf(l[0])<0;}))[0];
-    q=pm[0];right=pm[6]?"মোটা":"চিকন";opts=["মোটা","চিকন"];keep=true;
-  }else if(mode==="Z"){
-    var pz=shuffle(L.slice())[0];
-    q=pz[0];right=ZONE[pz[4]];opts=[ZONE.k,ZONE.j,ZONE.t,ZONE.f];keep=true;
+function rsh(a,rnd){for(var i=a.length-1;i>0;i--){var j=Math.floor(rnd()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function makeQ(m,rnd){
+  var o={ask:QP[m],q:"",right:"",opts:[],qBn:false,oAr:false,say:null},p,i,x;
+  if(m==="L"){
+    p=rsh(L.slice(),rnd);o.q=p[0][0];o.right=p[0][1];o.say=p[0][2];o.opts=[o.right];
+    for(i=1;o.opts.length<4;i++){if(o.opts.indexOf(p[i][1])<0)o.opts.push(p[i][1]);}
+    rsh(o.opts,rnd);
+  }else if(m==="R"){
+    p=rsh(L.slice(),rnd);o.q=p[0][1];o.right=p[0][0];o.say=p[0][2];o.opts=[o.right];o.qBn=true;o.oAr=true;
+    for(i=1;o.opts.length<4;i++){if(p[i][1]!==o.q)o.opts.push(p[i][0]);}
+    rsh(o.opts,rnd);
+  }else if(m==="F"){
+    p=rsh(L.filter(function(l){return NOJOIN.indexOf(l[0])<0&&l[0]!=="ء";}),rnd);
+    o.q=Z+p[0][0]+Z;o.right=p[0][1];o.say=p[0][2];o.opts=[o.right];
+    for(i=1;o.opts.length<4;i++){if(o.opts.indexOf(p[i][1])<0)o.opts.push(p[i][1]);}
+    rsh(o.opts,rnd);
+  }else if(m==="H"){
+    p=rsh(L.filter(function(l){return l[0]!=="ا";}),rnd);x=Math.floor(rnd()*6);
+    o.q=sylAr(p[0],x);o.right=sylBn(p[0],x);o.say=o.q;o.opts=[o.right];
+    rsh([0,1,2,3,4,5],rnd).forEach(function(k){var s=sylBn(p[0],k);if(o.opts.length<3&&o.opts.indexOf(s)<0)o.opts.push(s);});
+    for(i=1;o.opts.length<4;i++){var s2=sylBn(p[i],x);if(o.opts.indexOf(s2)<0)o.opts.push(s2);}
+    rsh(o.opts,rnd);
+  }else if(m==="M"){
+    p=rsh(L.filter(function(l){return "ارل".indexOf(l[0])<0;}),rnd)[0];
+    o.q=p[0];o.right=p[6]?"মোটা":"চিকন";o.say=p[2];o.opts=["মোটা","চিকন"];
+  }else if(m==="Z"){
+    p=rsh(L.slice(),rnd)[0];
+    o.q=p[0];o.right=ZONE[p[4]];o.say=p[2];o.opts=[ZONE.k,ZONE.j,ZONE.t,ZONE.f];
+  }else if(m==="S"){
+    p=SQ[Math.floor(rnd()*SQ.length)];o.q=p[0];o.right=SG4[p[1]];o.say=p[0];o.opts=SG4.slice();
   }else{
-    var pf=shuffle(L.filter(function(l){return NOJOIN.indexOf(l[0])<0&&l[0]!=="ء";}));
-    q=Z+pf[0][0]+Z;right=pf[0][1];opts=[right];
-    for(var f=1;opts.length<4;f++){if(opts.indexOf(pf[f][1])<0)opts.push(pf[f][1]);}
+    p=TQ[Math.floor(rnd()*TQ.length)];o.q=p[0];o.right=TG4[p[1]];o.say=p[0];o.opts=TG4.slice();
   }
-  $("qText").textContent=q;$("qText").className="quiz-q "+(qBn?"bnq":"ar");$("qText").lang=qBn?"bn":"ar";
-  var hit=L.filter(function(x){return x[0]===q||x[0]===right||(Z+x[0]+Z)===q;})[0],say=mode==="H"?q:(hit?hit[2]:null);
-  var box=$("qOpts");box.textContent="";
-  (keep?opts:shuffle(opts)).forEach(function(o){
-    var b=el("button",oAr?"ar":null,o);b.type="button";if(oAr)b.lang="ar";
-    b.addEventListener("click",function(){
-      if(answered)return;answered=true;
-      if(say)speak(say);
-      Array.prototype.forEach.call(box.children,function(x){if(x.textContent===right)x.classList.add("right");});
-      if(o===right){score++;tone(1);$("qMsg").textContent="ঠিক হয়েছে।";$("qMsg").style.color="var(--good)";}
-      else{b.classList.add("wrong");tone(0);$("qMsg").textContent="ভুল হয়েছে। সঠিক উত্তর: "+right;$("qMsg").style.color="var(--bad)";}
-      $("qCount").textContent="প্রশ্ন "+bn(qn+1)+" / ১০ । ঠিক হয়েছে "+bn(score);
-    });
+  return o;
+}
+function qShow(o,askEl,textEl,box,onPick){
+  askEl.textContent=o.ask;
+  textEl.textContent=o.q;textEl.className="quiz-q "+(o.qBn?"bnq":(o.q.length>4?"ar long":"ar"));textEl.lang=o.qBn?"bn":"ar";
+  box.textContent="";
+  o.opts.forEach(function(t){
+    var b=el("button",o.oAr?"ar":null,t);b.type="button";if(o.oAr)b.lang="ar";
+    b.addEventListener("click",function(){onPick(t,b);});
     box.appendChild(b);
+  });
+}
+function qHud(){$("qCount").textContent="প্রশ্ন "+bn(qn+1)+" / ১০ । ঠিক হয়েছে "+bn(score);}
+function ask(){
+  answered=false;$("qMsg").textContent="";$("qMsg").style.color="";qHud();
+  $("qNext").textContent=qn===9?"ফলাফল দেখুন":"পরের প্রশ্ন";
+  var o=makeQ(mode,Math.random),box=$("qOpts");
+  qShow(o,$("qAsk"),$("qText"),box,function(t,b){
+    if(answered)return;answered=true;
+    if(o.say)speak(o.say);
+    Array.prototype.forEach.call(box.children,function(x){if(x.textContent===o.right)x.classList.add("right");});
+    if(t===o.right){score++;tone(1);$("qMsg").textContent="ঠিক হয়েছে।";$("qMsg").style.color="var(--good)";}
+    else{b.classList.add("wrong");tone(0);$("qMsg").textContent="ভুল হয়েছে। সঠিক উত্তর: "+o.right;$("qMsg").style.color="var(--bad)";}
+    qHud();
   });
 }
 function finish(){
   $("qText").textContent="";$("qOpts").textContent="";$("qAsk").textContent="";
-  $("qCount").textContent="শেষ";
-  $("qMsg").style.color="";
-  $("qMsg").textContent="১০টির মধ্যে "+bn(score)+"টি ঠিক হয়েছে। "+(score>=8?"পরের ধাপে যেতে পারেন।":"হরফগুলো আরেকবার দেখে আবার দিন।");
+  $("qCount").textContent="শেষ";$("qMsg").style.color="";
+  $("qMsg").textContent="১০টির মধ্যে "+bn(score)+"টি ঠিক হয়েছে। "+(score>=8?"এই ধরনটি পার হয়েছেন।":"আরেকবার দেখে আবার দিন।");
   $("qNext").textContent="আবার শুরু করুন";qn=-1;
-  tone(2);if(score>=8)confetti();
+  pQuiz(mode,score);tone(2);if(score>=8)confetti();
 }
 function restart(){qn=0;score=0;ask();}
 $("qNext").addEventListener("click",function(){
@@ -795,7 +839,7 @@ $("qNext").addEventListener("click",function(){
   if(qn===9){finish();return;}
   qn++;ask();
 });
-var QM=[["L","হরফ চেনা"],["R","নাম থেকে হরফ"],["F","জোড়া রূপ চেনা"],["H","হরকত পড়া"],["M","মোটা না চিকন"],["Z","কোথা থেকে বের হয়"]];
+var QM=[["L","হরফ চেনা"],["R","নাম থেকে হরফ"],["F","জোড়া রূপ চেনা"],["H","হরকত পড়া"],["M","মোটা না চিকন"],["Z","কোথা থেকে বের হয়"],["S","চিহ্ন চেনা"],["T","তাজবীদের নিয়ম"]];
 function setMode(m){
   mode=m;
   Array.prototype.forEach.call($("qModes").children,function(b){b.setAttribute("aria-pressed",b.getAttribute("data-m")===m?"true":"false");});
@@ -807,6 +851,79 @@ QM.forEach(function(o){
   $("qModes").appendChild(b);
 });
 restart();
+
+/* ---------- exams: the same questions in the same order on every phone ---------- */
+var EXAMS=[{id:"e5",min:5,n:20,seed:1105},{id:"e10",min:10,n:40,seed:2210},{id:"e20",min:20,n:80,seed:4420}];
+var EXMIX=["L","R","F","H","M","Z","S","T","L","H"];
+function seeded(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+var exT=null;
+function exHome(){
+  if(exT){clearInterval(exT);exT=null;}
+  var b=$("exBody"),nm=el("input","s-search"),list=el("div","aro-menu");
+  b.textContent="";
+  nm.type="text";nm.id="exName";nm.placeholder="তোমার নাম লেখো";nm.setAttribute("aria-label","পরীক্ষার্থীর নাম");nm.maxLength=40;
+  try{nm.value=localStorage.getItem("sabak-name")||"";}catch(e){}
+  nm.addEventListener("input",function(){try{localStorage.setItem("sabak-name",nm.value);}catch(e){}});
+  b.appendChild(nm);
+  EXAMS.forEach(function(E){
+    var c=el("button","aro-opt"),t=el("span"),best=P.ex[E.id];c.type="button";
+    c.appendChild(el("span","n",bn(E.min)));
+    t.appendChild(el("b",null,bn(E.min)+" মিনিটের পরীক্ষা"));
+    t.appendChild(el("small",null,bn(E.n)+"টি প্রশ্ন, মোট "+bn(E.n)+" নম্বর"+(best?"। সেরা ফল "+bn(best.score)+"/"+bn(E.n)+", চেষ্টা "+bn(best.tries)+" বার":"")));
+    c.appendChild(t);
+    c.addEventListener("click",function(){exStart(E);});
+    list.appendChild(c);
+  });
+  b.appendChild(list);
+  b.appendChild(el("p","aro-note","প্রতিটি ফোনে একই প্রশ্ন একই ক্রমে আসে, তাই সবার নম্বর তুলনা করা যায়। সময় শেষ হলে পরীক্ষা নিজে থেকে জমা হয়। পরীক্ষার সময় উত্তর ঠিক না ভুল তা দেখানো হয় না।"));
+}
+function exStart(E){
+  var rnd=seeded(E.seed),qs=[],i,idx=0,sc=0,fin=false,startAt=Date.now(),endAt=startAt+E.min*60000,b=$("exBody");
+  var box=el("div","quiz"),top=el("div","game-top"),tm=el("span","chip gold",""),cn=el("span","chip",""),askE=el("div","j-q"),tx=el("div","quiz-q ar"),ob=el("div","opts");
+  for(i=0;i<E.n;i++)qs.push(makeQ(EXMIX[i%EXMIX.length],rnd));
+  b.textContent="";
+  top.appendChild(tm);top.appendChild(cn);box.appendChild(top);box.appendChild(askE);box.appendChild(tx);box.appendChild(ob);b.appendChild(box);
+  function done(){
+    if(fin)return;fin=true;
+    if(exT){clearInterval(exT);exT=null;}
+    var used=Math.min(E.min*60,Math.round((Date.now()-startAt)/1000)),old=P.ex[E.id]||{score:-1,tries:0};
+    P.ex[E.id]={score:Math.max(old.score,sc),tries:old.tries+1};pSave();
+    exResult(E,sc,idx,used,old.tries+1);
+  }
+  function clock(){
+    var left=Math.max(0,Math.round((endAt-Date.now())/1000)),m=Math.floor(left/60),s=left%60;
+    tm.textContent="সময় বাকি "+bn(m)+":"+bn(s<10?"0"+s:s);
+    if(left<=0)done();
+  }
+  function show(){
+    cn.textContent="প্রশ্ন "+bn(idx+1)+"/"+bn(E.n);
+    qShow(qs[idx],askE,tx,ob,function(t){
+      if(fin)return;
+      if(t===qs[idx].right)sc++;
+      idx++;
+      if(idx>=E.n)done();else show();
+    });
+  }
+  if(exT)clearInterval(exT);
+  exT=setInterval(clock,500);clock();show();
+  try{$("exam").scrollIntoView();}catch(e){}
+}
+function exResult(E,sc,ans,used,tries){
+  var b=$("exBody"),pct=Math.round(sc/E.n*100),name="",c=el("div","quiz"),row=el("div","btn-row");
+  try{name=(localStorage.getItem("sabak-name")||"").trim();}catch(e){}
+  var grade=pct>=80?"অতি উত্তম":pct>=60?"উত্তম":pct>=40?"চলনসই":"আরও অনুশীলন দরকার";
+  var msg="সবক পরীক্ষার ফলাফল\nনাম: "+(name||"(নাম দেওয়া হয়নি)")+"\nপরীক্ষা: "+E.min+" মিনিট\nনম্বর: "+sc+"/"+E.n+" ("+pct+"%)\nউত্তর দেওয়া প্রশ্ন: "+ans+"\nসময়: "+Math.floor(used/60)+" মিনিট "+(used%60)+" সেকেন্ড\nচেষ্টা নম্বর: "+tries;
+  var wa=el("a","btn wa","ফলাফল WhatsApp-এ পাঠাও"),again=el("button","btn ghost","সব পরীক্ষায় ফিরে যাও");
+  b.textContent="";
+  c.appendChild(el("div","j-q",(name?name+", ":"")+bn(E.min)+" মিনিটের পরীক্ষার ফলাফল"));
+  c.appendChild(el("div","j-big bnb",bn(sc)+"/"+bn(E.n)));
+  c.appendChild(el("p","j-q",grade+" ("+bn(pct)+"%)"));
+  c.appendChild(el("p","note","উত্তর দিয়েছ "+bn(ans)+"টি প্রশ্নের। সময় লেগেছে "+bn(Math.floor(used/60))+" মিনিট "+bn(used%60)+" সেকেন্ড। এটি তোমার "+bn(tries)+" নম্বর চেষ্টা।"));
+  wa.href="https://wa.me/8801722108111?text="+encodeURIComponent(msg);wa.target="_blank";wa.rel="noopener";
+  again.type="button";again.addEventListener("click",exHome);
+  row.appendChild(wa);row.appendChild(again);c.appendChild(row);b.appendChild(c);
+  tone(2);if(pct>=80)confetti();
+}
 
 var CHEER=["সাবাশ!","দারুণ হয়েছে!","মাশাআল্লাহ, চমৎকার!","বাহ, তুমি তো পারো!","একদম ঠিক!"];
 
@@ -960,6 +1077,7 @@ function jFinish(){
   var adv=jCur===J.lesson;
   J.xp+=jGain;if(adv)J.lesson++;
   try{localStorage.setItem(JKEY,JSON.stringify(J));}catch(e){}
+  pathDraw();
   tone(2);confetti();
   b.appendChild(el("div","j-big bnb","★ +"+bn(jGain)));
   b.appendChild(el("p","j-q","সবক "+bn(jCur)+" শেষ! "+(adv?"নিচে সবক "+bn(J.lesson)+" এসে গেছে।":"দারুণ করেছ।")));
@@ -973,38 +1091,69 @@ $("jGo").addEventListener("click",function(){
 });
 jHome();
 
-/* ---------- path ---------- */
+/* ---------- path: steps tick themselves from real activity ---------- */
+var PKEY="sabak-prog",P={q:{},fat:[],ws:[],so:[],nz:0,ex:{}};
+try{var ps0=JSON.parse(localStorage.getItem(PKEY)||"null");if(ps0){["q","fat","ws","so","nz","ex"].forEach(function(k){if(ps0[k]!==undefined&&ps0[k]!==null)P[k]=ps0[k];});}}catch(e){}
+function pSave(){try{localStorage.setItem(PKEY,JSON.stringify(P));}catch(e){}pathDraw();}
+function pAdd(list,val){if(P[list].indexOf(val)<0){P[list].push(val);pSave();}}
+function pQuiz(m,sc){if(!(P.q[m]>=sc)){P.q[m]=sc;pSave();}}
+function qStep(m){var b=P.q[m]||0;return [b>=8,"সেরা ফল "+bn(b)+"/১০"];}
 var STEPS=[
-["হরফ চেনা ও মাখরাজ","২৯টি হরফের নাম, বের হওয়ার জায়গা, মোটা না চিকন।",1],
-["হরফের রূপ ও জোড়া লাগানো","শব্দের শুরু, মাঝখান ও শেষে হরফের চেহারা; কোন ছয়টি হরফ পরের হরফের সাথে মেলে না।",1],
-["হরকত ও তানভীন","যবর, যের, পেশ এবং দুই যবর, দুই যের, দুই পেশ।",1],
-["সুকুন, তাশদীদ ও মদ","হরফ মিলিয়ে পড়া, দুইবার পড়া, এক আলিফ টানা।",1],
-["তাজবীদের নিয়ম","গুন্নাহ, নূন সাকিন ও তানভীনের চার নিয়ম, মীম সাকিন, আল্লাহ শব্দের লাম।",0],
-["সূরা ফাতিহা পড়া","আরো শিখুন অংশের ছোট অংশ পড়ুন থেকে সূরা ফাতিহা শব্দ ধরে ধরে পড়া।",1],
-["ছোট সূরা শব্দ ধরে পড়া","ইখলাস, ফালাক, নাস, কাউসার ও আসর শব্দ ধরে পড়া, প্রতিটি শব্দের উচ্চারণ শোনা।",1],
-["ছোট ৩০টি সূরা","সূরা নাস থেকে বুরূজ পর্যন্ত অর্থ বুঝে পড়া, তিলাওয়াত শুনে নিজের পড়া মিলিয়ে নেওয়া।",1],
-["ওযু ও নামাযের নিয়ম","ওযু, রাকাত সংখ্যা, নামাযের ফরয এবং প্রয়োজনীয় দোয়া শেখা।",1],
-["পূর্ণ কুরআন তিলাওয়াত","প্রথম থেকে শেষ পর্যন্ত দেখে দেখে পড়া, প্রতিদিন অল্প অল্প করে।",1]
+["হরফ চেনা ও মাখরাজ","খেলা ট্যাবে সবক ১০ পর্যন্ত শেষ করলে টিক পড়বে।",function(){var n=Math.min(J.lesson-1,10);return [n>=10,"সবক "+bn(n)+"/১০"];}],
+["হরফের রূপ ও জোড়া লাগানো","কুইজের “জোড়া রূপ চেনা”-তে ১০-এ ৮ পেলে টিক পড়বে।",function(){return qStep("F");}],
+["হরকত ও তানভীন","কুইজের “হরকত পড়া”-তে ১০-এ ৮ পেলে টিক পড়বে।",function(){return qStep("H");}],
+["সুকুন, তাশদীদ ও মদ","কুইজের “চিহ্ন চেনা”-তে ১০-এ ৮ পেলে টিক পড়বে।",function(){return qStep("S");}],
+["নূন সাকিন ও তানভীনের নিয়ম","কুইজের “তাজবীদের নিয়ম”-এ ১০-এ ৮ পেলে টিক পড়বে।",function(){return qStep("T");}],
+["সূরা ফাতিহা পড়া","“ছোট অংশ পড়ুন”-এ ফাতিহার সাতটি আয়াতেই শব্দ বা আয়াত শুনলে টিক পড়বে।",function(){return [P.fat.length>=7,"আয়াত "+bn(P.fat.length)+"/৭"];}],
+["ছোট সূরা শব্দ ধরে পড়া","ইখলাস, ফালাক, নাস, কাউসার ও আসর, পাঁচটিই শব্দ ধরে শুনলে টিক পড়বে।",function(){return [P.ws.length>=5,"সূরা "+bn(P.ws.length)+"/৫"];}],
+["ছোট ৩০টি সূরা","শেষ ৩০টি সূরার প্রতিটি অন্তত একবার খুলে পড়লে টিক পড়বে।",function(){var n=P.so.filter(function(x){return x>=85;}).length;return [n>=30,"সূরা "+bn(n)+"/৩০"];}],
+["ওযু ও নামাযের নিয়ম","“আরো শিখুন”-এর “ওযু ও নামায” অংশটি খুলে পড়লে টিক পড়বে।",function(){return [!!P.nz,"এখনো খোলা হয়নি"];}],
+["পূর্ণ কুরআন তিলাওয়াত","১১৪টি সূরার প্রতিটি অন্তত একবার খুলে পড়লে টিক পড়বে।",function(){return [P.so.length>=114,"সূরা "+bn(P.so.length)+"/১১৪"];}]
 ];
-var KEY="sabak-path",done=[];
-try{done=JSON.parse(localStorage.getItem(KEY)||"[]")||[];}catch(e){done=[];}
-function bar(){
-  var n=done.filter(Boolean).length;
+function pathDraw(){
+  var box=$("pathList"),n=0;box.textContent="";
+  STEPS.forEach(function(s,i){
+    var r=s[2](),li=el("li"),lb=el("div","p-text");
+    if(r[0])n++;
+    lb.appendChild(el("b",null,"ধাপ "+bn(i+1)+": "+s[0]));lb.appendChild(el("span",null,s[1]));
+    li.appendChild(el("span","p-mark"+(r[0]?" ok":""),r[0]?"✓":bn(i+1)));li.appendChild(lb);
+    li.appendChild(el("span","state"+(r[0]?"":" soon"),r[0]?"শেষ হয়েছে":r[1]));
+    box.appendChild(li);
+  });
   $("bar").style.width=(n/STEPS.length*100)+"%";
   $("barText").textContent=bn(STEPS.length)+"টি ধাপের "+bn(n)+"টি শেষ হয়েছে";
   $("ringArc").style.strokeDashoffset=String(94.25*(1-n/STEPS.length));
   $("ringText").textContent=bn(n)+"/"+bn(STEPS.length);
 }
-STEPS.forEach(function(s,i){
-  var li=el("li");
-  var c=el("input");c.type="checkbox";c.id="step"+i;c.checked=!!done[i];
-  c.addEventListener("change",function(){done[i]=c.checked;try{localStorage.setItem(KEY,JSON.stringify(done));}catch(e){}bar();});
-  var lb=el("label");lb.htmlFor=c.id;lb.appendChild(el("b",null,"ধাপ "+bn(i+1)+": "+s[0]));lb.appendChild(el("span",null,s[1]));
-  li.appendChild(c);li.appendChild(lb);
-  li.appendChild(el("span","state"+(s[2]?"":" soon"),s[2]?"এই পাতায় আছে":"পাঠ যোগ হবে"));
-  $("pathList").appendChild(li);
+pathDraw();
+exHome();
+
+/* ---------- reading rules shown in the intro screen ---------- */
+var RULES=[
+["সুকুন (জযম)","সুকুনওয়ালা হরফের নিজের স্বর নেই। আগের হরফের হরকতের সাথে মিলিয়ে একবার পড়তে হয়।",[["أَبْ","আব্"],["مِنْ","মিন্"],["قُلْ","ক্বুল্"]]],
+["তাশদীদ","তাশদীদওয়ালা হরফ দুইবার পড়া হয়: একবার আগের হরফের সাথে সুকুনে, আরেকবার নিজের হরকতে।",[["رَبِّ","রব্বি"],["حَقَّ","হাক্ক্বা"],["كُلُّ","কুল্লু"]]],
+["মদের হরফ","যবরের পর আলিফ, যেরের পর সুকুনওয়ালা ইয়া, পেশের পর সুকুনওয়ালা ওয়াও এলে এক আলিফ পরিমাণ টানতে হয়।",[["بَا","বা-"],["بِي","বী-"],["بُو","বূ-"],["قَالَ","ক্বা-লা"]]],
+["খাড়া হরকত","খাড়া যবর, খাড়া যের ও উল্টা পেশ মদের হরফের মতোই এক আলিফ টেনে পড়তে হয়।",[["ذٰلِكَ","যা-লিকা"],["بِهٖ","বিহী-"],["لَهٗ","লাহূ-"]]],
+["ওয়াজিব গুন্নাহ","নূন বা মীমে তাশদীদ থাকলে নাকের ভেতর আওয়াজ নিয়ে এক আলিফ পরিমাণ গুন্নাহ করতে হয়।",[["إِنَّ","ইন্না"],["ثُمَّ","ছুম্মা"],["عَمَّ","‘আম্মা"]]],
+["নূন সাকিন ও তানভীন: ইযহার","পরে কণ্ঠনালীর ছয় হরফ (ء ه ع ح غ خ) এলে নূনকে গুন্নাহ ছাড়া স্পষ্ট করে পড়তে হয়।",[["مِنْ هَادٍ","মিন হা-দিন"],["أَنْعَمْتَ","আন‘আমতা"]]],
+["নূন সাকিন ও তানভীন: ইদগাম","পরে ي ر م ل و ن এলে নূনকে পরের হরফে মিলিয়ে পড়তে হয়। ي ن م و-তে গুন্নাহসহ, ل ر-তে গুন্নাহ ছাড়া।",[["مَنْ يَقُولُ","মাইঁ ইয়াক্বূলু"],["مِنْ رَبِّهِمْ","মির রব্বিহিম"]]],
+["নূন সাকিন ও তানভীন: ইকলাব","পরে ب এলে নূনকে মীমে বদলে গুন্নাহসহ পড়তে হয়।",[["مِنْ بَعْدِ","মিম বা‘দি"]]],
+["নূন সাকিন ও তানভীন: ইখফা","বাকি পনেরো হরফের আগে নূনকে নাকে আওয়াজ নিয়ে হালকা করে পড়তে হয়।",[["أَنْتُمْ","আনতুম"],["مِنْ قَبْلُ","মিন ক্ববলু"]]],
+["মীম সাকিন: ইখফা","পরে ب এলে মীমকে গুন্নাহসহ হালকা করে পড়তে হয়।",[["تَرْمِيهِمْ بِحِجَارَةٍ","তারমীহিম বিহিজা-রাতিন"]]],
+["মীম সাকিন: ইদগাম","পরে আরেকটি م এলে দুই মীম মিলিয়ে গুন্নাহসহ পড়তে হয়।",[["لَهُمْ مَا","লাহুম মা-"]]],
+["মীম সাকিন: ইযহার","বাকি সব হরফের আগে মীমকে গুন্নাহ ছাড়া স্পষ্ট করে পড়তে হয়।",[["أَلَمْ تَرَ","আলাম তারা"],["الْحَمْدُ","আলহামদু"]]]
+];
+RULES.forEach(function(r){
+  var c=el("div","r-card"),row=el("div","ex-row");
+  c.appendChild(el("h3",null,r[0]));c.appendChild(el("p",null,r[1]));
+  r[2].forEach(function(e){
+    var x=el("button","ex"),a=el("span","ar",e[0]);x.type="button";a.lang="ar";
+    x.appendChild(a);x.appendChild(el("small",null,e[1]));
+    x.addEventListener("click",function(){speak(e[0]);});
+    row.appendChild(x);
+  });
+  c.appendChild(row);$("niyomBody").appendChild(c);
 });
-bar();
 
 /* ---------- more: surahs, full Quran, duas, virtues, prayer guide ---------- */
 var SN=["আল-ফাতিহা","আল-বাকারা","আলে ইমরান","আন-নিসা","আল-মায়িদা","আল-আনআম","আল-আরাফ","আল-আনফাল","আত-তাওবা","ইউনুস","হুদ","ইউসুফ","আর-রাদ","ইবরাহীম","আল-হিজর","আন-নাহল","বনী ইসরাঈল","আল-কাহফ","মারইয়াম","ত্বা-হা","আল-আম্বিয়া","আল-হাজ্জ","আল-মুমিনুন","আন-নূর","আল-ফুরকান","আশ-শুআরা","আন-নামল","আল-কাসাস","আল-আনকাবুত","আর-রূম","লুকমান","আস-সাজদা","আল-আহযাব","সাবা","ফাতির","ইয়াসীন","আস-সাফফাত","সোয়াদ","আয-যুমার","গাফির (আল-মুমিন)","হা-মীম সাজদা (ফুসসিলাত)","আশ-শূরা","আয-যুখরুফ","আদ-দুখান","আল-জাসিয়া","আল-আহকাফ","মুহাম্মাদ","আল-ফাতহ","আল-হুজুরাত","ক্বাফ","আয-যারিয়াত","আত-তূর","আন-নাজম","আল-ক্বামার","আর-রাহমান","আল-ওয়াকিয়া","আল-হাদীদ","আল-মুজাদালা","আল-হাশর","আল-মুমতাহিনা","আস-সাফ","আল-জুমুআ","আল-মুনাফিকুন","আত-তাগাবুন","আত-তালাক","আত-তাহরীম","আল-মুলক","আল-কলম","আল-হাক্কাহ","আল-মাআরিজ","নূহ","আল-জিন","আল-মুযযাম্মিল","আল-মুদ্দাসসির","আল-কিয়ামাহ","আদ-দাহর (আল-ইনসান)","আল-মুরসালাত","আন-নাবা","আন-নাযিআত","আবাসা","আত-তাকভীর","আল-ইনফিতার","আল-মুতাফফিফীন","আল-ইনশিকাক","আল-বুরূজ","আত-তারিক","আল-আলা","আল-গাশিয়াহ","আল-ফাজর","আল-বালাদ","আশ-শামস","আল-লাইল","আদ-দুহা","আল-ইনশিরাহ","আত-তীন","আল-আলাক","আল-কদর","আল-বাইয়্যিনাহ","আয-যিলযাল","আল-আদিয়াত","আল-কারিআহ","আত-তাকাসুর","আল-আসর","আল-হুমাযাহ","আল-ফীল","কুরাইশ","আল-মাউন","আল-কাউসার","আল-কাফিরুন","আন-নাসর","আল-লাহাব","আল-ইখলাস","আল-ফালাক","আন-নাস"];
@@ -1147,6 +1296,7 @@ function aroSurah(n,back){
       data=dt;els=es;
       es.forEach(function(x,i){x.addEventListener("click",function(){playAt(i);});});
       st.textContent="আয়াতে চাপ দিলে সেখান থেকে পড়া শুরু হবে";
+      pAdd("so",n);
     });
     aroStop=stop;
   },true);
@@ -1212,6 +1362,7 @@ function aroFazilat(){
 }
 function aroNamaz(){
   aroShow("ওযু ও নামায","ওযু, কোন ওয়াক্তে কত রাকাত, ঈদের নামায ও জানাযার নামাযের নিয়ম।",BACK,function(b){
+    if(!P.nz){P.nz=1;pSave();}
     rList(b,"ওযুর ফরয চারটি",["পুরো মুখ একবার ধোয়া","দুই হাত কনুইসহ একবার ধোয়া","মাথার চার ভাগের এক ভাগ মাসেহ করা","দুই পা টাখনুসহ একবার ধোয়া"],true,true);
     rList(b,"ওযু করার নিয়ম",["নিয়ত করে বিসমিল্লাহ বলা","দুই হাত কবজি পর্যন্ত তিনবার ধোয়া","মিসওয়াক করা ও তিনবার কুলি করা","তিনবার নাকে পানি দিয়ে পরিষ্কার করা","পুরো মুখ তিনবার ধোয়া","প্রথমে ডান, পরে বাম হাত কনুইসহ তিনবার ধোয়া","পুরো মাথা একবার মাসেহ করা, তারপর কান ও ঘাড় মাসেহ করা","প্রথমে ডান, পরে বাম পা টাখনুসহ তিনবার ধোয়া"],true);
     rList(b,"যেসব কারণে ওযু ভেঙে যায়",["পেশাব-পায়খানার রাস্তা দিয়ে কিছু বের হওয়া","শরীর থেকে রক্ত বা পুঁজ বের হয়ে গড়িয়ে পড়া","মুখ ভরে বমি হওয়া","শুয়ে বা হেলান দিয়ে ঘুমানো","বেহুঁশ হয়ে যাওয়া","নামাযে শব্দ করে হাসা"],false);
@@ -1277,8 +1428,8 @@ function aroWords(s){
       btn.classList.remove("pop");void btn.offsetWidth;btn.classList.add("pop");
       pa.textContent=w.t;pb.textContent=w.bn;pn.textContent=w.note;
       ps.onclick=function(){wAudio(s,w.a,w.i,w.t);};
-      pf.onclick=function(){fullAyah(w.g,btn.parentNode);};
-      if(play)wAudio(s,w.a,w.i,w.t);
+      pf.onclick=function(){fullAyah(w.g,btn.parentNode);if(s===1){pAdd("fat",w.a);}else{pAdd("ws",s);}};
+      if(play){wAudio(s,w.a,w.i,w.t);if(s===1){pAdd("fat",w.a);}else{pAdd("ws",s);}}
     }
     function draw(ayahs){
       area.textContent="";
@@ -1350,7 +1501,7 @@ document.addEventListener("keydown",function(e){if(e.key==="Escape")$("sheet").h
 aroHome(false);
 
 /* ---------- phone app screens ---------- */
-var SCREEN={horof:"horof",tofat:"horof",harakat:"horof",quiz:"quiz",jhotpot:"jhotpot",path:"path",aro:"aro"};
+var SCREEN={horof:"horof",tofat:"horof",harakat:"horof",niyom:"horof",exam:"quiz",quiz:"quiz",jhotpot:"jhotpot",path:"path",aro:"aro"};
 var mq=window.matchMedia("(max-width:720px)");
 function route(){
   var h=(location.hash||"#horof").slice(1), s=SCREEN[h]||"horof", app=mq.matches;
