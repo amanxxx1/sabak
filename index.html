@@ -267,6 +267,52 @@ footer{padding:28px 0 48px;color:var(--muted);font-size:.92rem}
   .game .btn-row .btn{width:100%;justify-content:center;min-height:50px;border-radius:14px}
 }
 @media (prefers-reduced-motion:reduce){.card.up{animation:none}}
+.aro-menu{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.aro-opt{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px;box-shadow:var(--shadow)}
+.aro-opt .n{width:44px;height:44px;border-radius:14px;background:linear-gradient(160deg,var(--stage-a),var(--stage-b));color:var(--on-stage);display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-size:1.3rem}
+.aro-opt b{display:block;font-weight:600}
+.aro-opt small{color:var(--muted)}
+.aro-opt.pop{animation:pop .32s ease-out}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(.94)}75%{transform:scale(1.04)}100%{transform:scale(1)}}
+.sheet{position:fixed;top:0;right:0;bottom:0;left:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:16px}
+.sheet[hidden]{display:none}
+.sheet-bg{position:absolute;top:0;right:0;bottom:0;left:0;background:rgba(8,14,28,.55)}
+.sheet-card{position:relative;background:var(--paper);border-radius:24px;padding:18px;width:100%;max-width:560px;max-height:86%;overflow:auto;box-shadow:var(--shadow);animation:sheetUp .28s ease-out}
+.sheet-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.sheet-x{border:0;background:var(--lapis-soft);color:var(--lapis);width:40px;height:40px;border-radius:50%;font-size:1.4rem;line-height:1}
+.sheet .aro-menu{grid-template-columns:1fr}
+@keyframes sheetUp{from{transform:translateY(40px);opacity:.3}to{transform:none;opacity:1}}
+.aro-in{animation:rise .3s ease-out}
+.s-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.s-item{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:center;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:9px 12px}
+.s-item[hidden]{display:none}
+.s-item .n{font-variant-numeric:tabular-nums;color:var(--gold);font-weight:600;text-align:center;border:1px solid var(--gold);border-radius:99px;font-size:.85rem;padding:1px 0}
+.s-search{display:block;width:100%;max-width:420px;font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:12px}
+.ayat-read{display:flex;flex-direction:column;max-width:760px}
+.a-row{padding:14px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.a-ar{font-family:var(--f-ar);font-size:30px;line-height:2.1;direction:rtl;text-align:right}
+.a-bn{color:var(--muted)}
+.a-bn b{color:var(--gold);font-weight:600;margin-right:8px;font-variant-numeric:tabular-nums}
+.r-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:10px;max-width:760px;box-shadow:var(--shadow)}
+.r-card h3{margin-bottom:4px}
+.r-card p{color:var(--muted)}
+.r-card .src{font-size:.88rem;margin-bottom:8px}
+.r-card ol,.r-card ul{margin:8px 0 0;padding-left:24px}
+.r-card li{margin-bottom:4px}
+.r-card .a-ar{font-size:28px}
+.r-h{margin:24px 0 10px}
+details.r-card summary{font-family:var(--f-display);font-size:1.15rem;cursor:pointer}
+.aro-note{font-size:.92rem;color:var(--gold);max-width:62ch;margin-top:14px}
+#aroBody audio{display:block;width:100%;max-width:420px;margin:6px 0 10px}
+#aroBody .table-wrap{max-width:760px;margin-bottom:10px}
+@media (max-width:720px){
+  .tabs{grid-template-columns:repeat(7,1fr);padding-left:4px;padding-right:4px}
+  .tabs a{font-size:.68rem}
+  .sheet{align-items:flex-end;padding:0}
+  .sheet-card{border-radius:24px 24px 0 0;padding-bottom:calc(18px + env(safe-area-inset-bottom));max-height:88%}
+  .a-ar{font-size:27px}
+}
+@media (prefers-reduced-motion:reduce){.aro-opt.pop{animation:none}.sheet-card{animation:none}.aro-in{animation:none}}
 @keyframes rise{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){body.app .block.on{animation:none}.ring .fg{transition:none}}
 </style>
@@ -284,6 +330,7 @@ footer{padding:28px 0 48px;color:var(--muted);font-size:.92rem}
       <a href="#jhotpot">ঝটপট পাঠ</a>
       <a href="#khela">খেলা</a>
       <a href="#path">শেখার পথ</a>
+      <a href="#aro">আরো শিখুন</a>
     </nav>
     <a class="ring" href="#path" aria-label="শেখার পথের অগ্রগতি"><span id="ringText"></span><svg viewBox="0 0 36 36" aria-hidden="true"><circle class="tr" cx="18" cy="18" r="15" fill="none" stroke-width="4"></circle><circle class="fg" id="ringArc" cx="18" cy="18" r="15" fill="none" stroke-width="4" stroke-linecap="round" stroke-dasharray="94.25" stroke-dashoffset="94.25" transform="rotate(-90 18 18)"></circle></svg></a>
   </div>
@@ -448,7 +495,26 @@ footer{padding:28px 0 48px;color:var(--muted);font-size:.92rem}
     <ol class="path" id="pathList"></ol>
   </div>
 </section>
+
+<section class="block" id="aro">
+  <div class="wrap">
+    <div class="block-head">
+      <h2 id="aroTitle">আরো শিখুন</h2>
+      <p id="aroLead"></p>
+      <div class="btn-row"><button class="btn ghost" id="aroBack" type="button" hidden></button></div>
+    </div>
+    <div id="aroBody"></div>
+  </div>
+</section>
 </main>
+
+<div class="sheet" id="sheet" hidden>
+  <div class="sheet-bg" id="sheetBg"></div>
+  <div class="sheet-card" role="dialog" aria-modal="true" aria-labelledby="sheetH">
+    <div class="sheet-top"><h3 id="sheetH">আরো শিখুন</h3><button class="sheet-x" id="sheetX" type="button" aria-label="বন্ধ করুন">×</button></div>
+    <div class="aro-menu" id="sheetMenu"></div>
+  </div>
+</div>
 
 <nav class="tabs" id="tabs" aria-label="মূল মেনু">
   <a href="#horof"><span class="ic" lang="ar">ب</span>হরফ</a>
@@ -457,6 +523,7 @@ footer{padding:28px 0 48px;color:var(--muted);font-size:.92rem}
   <a href="#quiz"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l3 3 5-6"></path></svg></span>কুইজ</a>
   <a href="#khela"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 16.9 6.7 19.6l1-5.8L3.5 9.7l5.9-.9z"></path></svg></span>খেলা</a>
   <a href="#path"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21V4"></path><path d="M6 5h11l-2 3.5l2 3.5H6"></path></svg></span>পথ</a>
+  <a href="#aro" id="tabAro"><span class="ic"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle></svg></span>আরো</a>
 </nav>
 
 <footer><div class="wrap">কুরআন শুদ্ধ করে পড়তে একজন যোগ্য উস্তাদের কাছে পড়া মিলিয়ে নেওয়া জরুরি।</div></footer>
@@ -760,7 +827,7 @@ var actx=null;
 function tone(kind){
   try{
     actx=actx||new (window.AudioContext||window.webkitAudioContext)();
-    var seq=kind===1?[660,880]:kind===2?[523,659,784,1047]:[220,180];
+    var seq=kind===1?[660,880]:kind===2?[523,659,784,1047]:kind===3?[784,988,1319]:[220,180];
     seq.forEach(function(f,i){
       var o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime+i*0.11;
       o.type=kind===0?"triangle":"sine";o.frequency.value=f;
@@ -929,8 +996,207 @@ STEPS.forEach(function(s,i){
 });
 bar();
 
+/* ---------- more: surahs, full Quran, duas, virtues, prayer guide ---------- */
+var SN=["আল-ফাতিহা","আল-বাকারা","আলে ইমরান","আন-নিসা","আল-মায়িদা","আল-আনআম","আল-আরাফ","আল-আনফাল","আত-তাওবা","ইউনুস","হুদ","ইউসুফ","আর-রাদ","ইবরাহীম","আল-হিজর","আন-নাহল","বনী ইসরাঈল","আল-কাহফ","মারইয়াম","ত্বা-হা","আল-আম্বিয়া","আল-হাজ্জ","আল-মুমিনুন","আন-নূর","আল-ফুরকান","আশ-শুআরা","আন-নামল","আল-কাসাস","আল-আনকাবুত","আর-রূম","লুকমান","আস-সাজদা","আল-আহযাব","সাবা","ফাতির","ইয়াসীন","আস-সাফফাত","সোয়াদ","আয-যুমার","গাফির (আল-মুমিন)","হা-মীম সাজদা (ফুসসিলাত)","আশ-শূরা","আয-যুখরুফ","আদ-দুখান","আল-জাসিয়া","আল-আহকাফ","মুহাম্মাদ","আল-ফাতহ","আল-হুজুরাত","ক্বাফ","আয-যারিয়াত","আত-তূর","আন-নাজম","আল-ক্বামার","আর-রাহমান","আল-ওয়াকিয়া","আল-হাদীদ","আল-মুজাদালা","আল-হাশর","আল-মুমতাহিনা","আস-সাফ","আল-জুমুআ","আল-মুনাফিকুন","আত-তাগাবুন","আত-তালাক","আত-তাহরীম","আল-মুলক","আল-কলম","আল-হাক্কাহ","আল-মাআরিজ","নূহ","আল-জিন","আল-মুযযাম্মিল","আল-মুদ্দাসসির","আল-কিয়ামাহ","আদ-দাহর (আল-ইনসান)","আল-মুরসালাত","আন-নাবা","আন-নাযিআত","আবাসা","আত-তাকভীর","আল-ইনফিতার","আল-মুতাফফিফীন","আল-ইনশিকাক","আল-বুরূজ","আত-তারিক","আল-আলা","আল-গাশিয়াহ","আল-ফাজর","আল-বালাদ","আশ-শামস","আল-লাইল","আদ-দুহা","আল-ইনশিরাহ","আত-তীন","আল-আলাক","আল-কদর","আল-বাইয়্যিনাহ","আয-যিলযাল","আল-আদিয়াত","আল-কারিআহ","আত-তাকাসুর","আল-আসর","আল-হুমাযাহ","আল-ফীল","কুরাইশ","আল-মাউন","আল-কাউসার","আল-কাফিরুন","আন-নাসর","আল-লাহাব","আল-ইখলাস","আল-ফালাক","আন-নাস"];
+var QAPI="https://api.alquran.cloud/v1/surah/",QEDS="/editions/quran-uthmani,bn.bengali",QAUDIO="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/";
+var aCache={};
+function aFetch(s,from,to){
+  var key=s+":"+(from||0)+"-"+(to||0);
+  if(aCache[key])return Promise.resolve(aCache[key]);
+  var url=QAPI+s+QEDS+(from?"?offset="+(from-1)+"&limit="+(to-from+1):"");
+  return fetch(url).then(function(r){if(!r.ok)throw new Error("http");return r.json();}).then(function(j){
+    var ar=null,bg=null,out=[],i;
+    j.data.forEach(function(e){if(e.edition.identifier==="quran-uthmani")ar=e.ayahs;else bg=e.ayahs;});
+    if(!ar)throw new Error("data");
+    for(i=0;i<ar.length;i++)out.push({n:ar[i].numberInSurah,ar:ar[i].text,bn:bg&&bg[i]?bg[i].text:""});
+    aCache[key]=out;return out;
+  });
+}
+function aRows(box,s,from,to){
+  box.textContent="";box.appendChild(el("p","note","লোড হচ্ছে…"));
+  aFetch(s,from,to).then(function(rows){
+    box.textContent="";
+    rows.forEach(function(r){
+      var d=el("div","a-row"),a=el("div","a-ar",r.ar),p=el("div","a-bn");a.lang="ar";
+      p.appendChild(el("b",null,bn(r.n)));p.appendChild(document.createTextNode(r.bn));
+      d.appendChild(a);d.appendChild(p);box.appendChild(d);
+    });
+  },function(){
+    box.textContent="";
+    box.appendChild(el("p","note","আয়াত আনা গেল না। ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন।"));
+    var b=el("button","btn ghost","আবার চেষ্টা করুন");b.type="button";
+    b.addEventListener("click",function(){aRows(box,s,from,to);});box.appendChild(b);
+  });
+}
+function aroShow(title,lead,back,build,nav){
+  $("aroTitle").textContent=title;$("aroLead").textContent=lead;
+  var bk=$("aroBack");bk.hidden=!back;bk.textContent=back?back[0]:"";bk.onclick=back?back[1]:null;
+  var b=$("aroBody");b.textContent="";b.classList.remove("aro-in");void b.offsetWidth;b.classList.add("aro-in");
+  build(b);
+  if(!nav)return;
+  if(location.hash!=="#aro"){location.hash="#aro";}
+  else if(document.body.classList.contains("app")){window.scrollTo(0,0);}
+  else{$("aro").scrollIntoView();}
+}
+function rList(box,title,items,ordered,open){
+  var d=el("details","r-card"),l=el(ordered?"ol":"ul");
+  d.appendChild(el("summary",null,title));if(open)d.open=true;
+  items.forEach(function(t){l.appendChild(el("li",null,t));});
+  d.appendChild(l);box.appendChild(d);
+}
+function refCard(box,title,desc,src,s,from,to,back){
+  var c=el("div","r-card"),hold=el("div"),bt=el("button","btn ghost",from?"আয়াত ও অর্থ দেখুন":"সূরাটি পড়ুন");
+  c.appendChild(el("h3",null,title));
+  if(desc)c.appendChild(el("p",null,desc));
+  c.appendChild(el("p","src",(src?"সূত্র: "+src+"। ":"")+"সূরা "+SN[s-1]+(from?", আয়াত "+bn(from)+(to>from?"–"+bn(to):""):"")));
+  bt.type="button";
+  bt.addEventListener("click",function(){
+    if(from){bt.hidden=true;aRows(hold,s,from,to);}else{aroSurah(s,back);}
+  });
+  c.appendChild(bt);c.appendChild(hold);box.appendChild(c);
+}
+var NOTE="এই অংশ সংক্ষেপে, হানাফী মাযহাব অনুযায়ী লেখা। বিস্তারিত ও ভিন্ন অবস্থার মাসআলা একজন আলেমের কাছ থেকে জেনে নিন।";
+function aroSurahList(short){
+  aroShow(short?"ছোট ৩০টি সূরা":"সম্পূর্ণ কুরআন",short?"সূরা আন-নাস থেকে আল-বুরূজ পর্যন্ত। সূরায় চাপ দিলে আরবি, বাংলা অর্থ ও অডিও আসবে।":"যেকোনো সূরায় চাপ দিন। প্রতি আয়াতের নিচে বাংলা অর্থ থাকবে।",BACK,function(b){
+    var list=el("div","s-list"),ids=[],i;
+    if(short){for(i=114;i>=85;i--)ids.push(i);}else{for(i=1;i<=114;i++)ids.push(i);}
+    if(!short){
+      var q=el("input","s-search");q.type="search";q.id="sSearch";q.placeholder="সূরার নাম বা নম্বর লিখুন";q.setAttribute("aria-label","সূরা খুঁজুন");
+      q.addEventListener("input",function(){
+        var v=q.value.trim();
+        Array.prototype.forEach.call(list.children,function(c){c.hidden=!!v&&c.getAttribute("data-k").indexOf(v)<0;});
+      });
+      b.appendChild(q);
+    }
+    ids.forEach(function(n){
+      var c=el("button","s-item");c.type="button";c.setAttribute("data-k",SN[n-1]+" "+n+" "+bn(n));
+      c.appendChild(el("span","n",bn(n)));c.appendChild(el("span",null,SN[n-1]));
+      c.addEventListener("click",function(){aroSurah(n,["সূরার তালিকায় ফিরে যান",function(){aroSurahList(short);}]);});
+      list.appendChild(c);
+    });
+    b.appendChild(list);
+  },true);
+}
+function aroSurah(n,back){
+  aroShow("সূরা "+SN[n-1],"সূরা নম্বর "+bn(n)+"। অর্থ: মুহিউদ্দীন খান। তিলাওয়াত: মিশারি আল-আফাসি।",back,function(b){
+    var ab=el("button","btn ghost","অডিও শুনুন"),rows=el("div","ayat-read");ab.type="button";
+    ab.addEventListener("click",function(){
+      var au=document.createElement("audio");au.controls=true;au.src=QAUDIO+n+".mp3";
+      ab.parentNode.replaceChild(au,ab);
+      var p=au.play();if(p&&p.catch)p.catch(function(){});
+    });
+    b.appendChild(ab);b.appendChild(rows);aRows(rows,n);
+  },true);
+}
+var QDUA=[
+[2,201,"দুনিয়া ও আখিরাতের কল্যাণ চাওয়া"],
+[2,286,"ভুল-ত্রুটির ক্ষমা চাওয়া (আয়াতের শেষ অংশ)"],
+[3,8,"হিদায়াতের উপর অটল থাকা"],
+[7,23,"নিজের ভুল স্বীকার করে ক্ষমা চাওয়া"],
+[14,40,"নিজে ও সন্তানদের নামাযী হওয়া"],
+[14,41,"নিজের, মা-বাবার ও মুমিনদের ক্ষমা"],
+[17,24,"মা-বাবার জন্য রহমত চাওয়া (আয়াতের শেষ অংশ)"],
+[20,114,"জ্ঞান বৃদ্ধির দোয়া (আয়াতের শেষ অংশ)"],
+[21,87,"বিপদে ইউনুস (আ.)-এর দোয়া (আয়াতের শেষ অংশ)"],
+[23,118,"ক্ষমা ও রহমত চাওয়া"],
+[25,74,"নেক পরিবার চাওয়া"]
+];
+var DDUA=[
+["ঘুমানোর আগে","اللَّهُمَّ بِاسْمِكَ أَمُوتُ وَأَحْيَا","হে আল্লাহ, তোমার নামেই আমি মরি ও বাঁচি।"],
+["ঘুম থেকে উঠে","الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ","সব প্রশংসা আল্লাহর, যিনি আমাদের মৃত্যুর (ঘুমের) পর জীবিত করলেন, আর তাঁর কাছেই ফিরে যেতে হবে।"],
+["খাওয়ার শুরুতে","بِسْمِ اللَّهِ","আল্লাহর নামে শুরু করছি।"],
+["খাওয়ার শেষে","الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مُسْلِمِينَ","সব প্রশংসা আল্লাহর, যিনি আমাদের খাওয়ালেন, পান করালেন এবং মুসলিম বানালেন।"],
+["টয়লেটে ঢোকার আগে","اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ","হে আল্লাহ, আমি তোমার কাছে অপবিত্র জিন (পুরুষ ও নারী) থেকে আশ্রয় চাই।"],
+["টয়লেট থেকে বের হয়ে","غُفْرَانَكَ","(হে আল্লাহ) তোমার ক্ষমা চাই।"]
+];
+function aroDua(){
+  aroShow("দোয়া ও মাসআলা","কুরআনের দোয়া, প্রতিদিনের ছোট দোয়া আর জরুরি কিছু মাসআলা।",BACK,function(b){
+    b.appendChild(el("h3","r-h","কুরআনের দোয়া"));
+    QDUA.forEach(function(d){refCard(b,d[2],"","",d[0],d[1],d[1]);});
+    b.appendChild(el("h3","r-h","প্রতিদিনের দোয়া"));
+    DDUA.forEach(function(d){
+      var c=el("div","r-card"),a=el("div","a-ar",d[1]);a.lang="ar";
+      c.appendChild(el("h3",null,d[0]));c.appendChild(a);c.appendChild(el("p",null,d[2]));b.appendChild(c);
+    });
+    b.appendChild(el("h3","r-h","জরুরি মাসআলা"));
+    rList(b,"গোসলের ফরয তিনটি",["গড়গড়াসহ কুলি করা","নাকের ভেতর পানি পৌঁছানো","সারা শরীর এমনভাবে ধোয়া যেন চুল পরিমাণ জায়গাও শুকনো না থাকে"],true);
+    rList(b,"তায়াম্মুমের ফরয তিনটি",["পবিত্র হওয়ার নিয়ত করা","দুই হাত পবিত্র মাটিতে মেরে পুরো মুখ মাসেহ করা","আবার মাটিতে হাত মেরে দুই হাত কনুইসহ মাসেহ করা"],true);
+    rList(b,"নামাযের বাইরের সাত ফরয",["শরীর পাক হওয়া","কাপড় পাক হওয়া","নামাযের জায়গা পাক হওয়া","সতর ঢাকা","কিবলামুখী হওয়া","নামাযের ওয়াক্ত হওয়া","নিয়ত করা"],true);
+    rList(b,"নামাযের ভেতরের ছয় ফরয",["তাকবীরে তাহরীমা বলা","দাঁড়িয়ে নামায পড়া","কিরাত পড়া","রুকু করা","দুই সিজদা করা","শেষ বৈঠকে তাশাহহুদ পরিমাণ বসা"],true);
+    rList(b,"যেসব কারণে নামায ভেঙে যায়",["নামাযে কথা বলা","সালাম দেওয়া বা সালামের জবাব দেওয়া","কিছু খাওয়া বা পান করা","কিবলার দিক থেকে বুক ফিরে যাওয়া","ওযু ভেঙে যাওয়া","শব্দ করে হাসা","এমন কাজ করা যা দেখে মনে হয় লোকটি নামাযে নেই"],false);
+    rList(b,"রোযা ভাঙার প্রধান কারণ",["ইচ্ছা করে কিছু খাওয়া বা পান করা","রোযা অবস্থায় স্ত্রী সহবাস করা","ইচ্ছা করে মুখ ভরে বমি করা","ভুলে খেলে বা পান করলে রোযা ভাঙে না"],false);
+    b.appendChild(el("p","aro-note",NOTE));
+  },true);
+}
+var FAZ=[
+["আয়াতুল কুরসী","ঘুমানোর আগে পড়লে সকাল পর্যন্ত আল্লাহর পক্ষ থেকে একজন হিফাযতকারী থাকে। প্রতি ফরয নামাযের পরেও পড়ার কথা হাদীসে এসেছে।","সহীহ বুখারী; নাসাঈ",2,255,255],
+["সূরা বাকারার শেষ দুই আয়াত","যে ব্যক্তি রাতে এই দুই আয়াত পড়বে, তা তার জন্য যথেষ্ট হবে।","সহীহ বুখারী ও মুসলিম",2,285,286],
+["সূরা কাহফের প্রথম দশ আয়াত","যে ব্যক্তি এই দশ আয়াত মুখস্থ করবে, সে দাজ্জালের ফিতনা থেকে নিরাপদ থাকবে।","সহীহ মুসলিম",18,1,10],
+["সূরা ফাতিহা","কুরআনের সবচেয়ে মর্যাদাপূর্ণ সূরা। নামাযের প্রতি রাকাতে পড়া হয়।","সহীহ বুখারী",1,0,0],
+["সূরা মুলক","ত্রিশ আয়াতের এই সূরা তার পাঠকারীর জন্য সুপারিশ করবে, যতক্ষণ না তাকে ক্ষমা করা হয়।","তিরমিযী; আবু দাউদ",67,0,0],
+["সূরা ইখলাস","এই সূরা কুরআনের এক-তৃতীয়াংশের সমান।","সহীহ বুখারী",112,0,0],
+["সূরা ফালাক","আশ্রয় চাওয়ার জন্য সূরা ফালাক ও সূরা নাসের মতো আর কিছু নেই। সকাল-সন্ধ্যা ও ঘুমানোর আগে পড়া হয়।","সহীহ মুসলিম; আবু দাউদ",113,0,0],
+["সূরা নাস","সূরা ফালাকের সাথে মিলিয়ে পড়া হয়, আল্লাহর কাছে আশ্রয় চাওয়ার সূরা।","সহীহ মুসলিম; আবু দাউদ",114,0,0]
+];
+function aroFazilat(){
+  aroShow("ফযীলতের আয়াত","যে আয়াত ও সূরার বিশেষ ফযীলত হাদীসে এসেছে। প্রতিটির নিচে সূত্র দেওয়া আছে।",BACK,function(b){
+    FAZ.forEach(function(f){refCard(b,f[0],f[1],f[2],f[3],f[4],f[5],["ফযীলতের আয়াতে ফিরে যান",aroFazilat]);});
+    b.appendChild(el("p","aro-note","হাদীসের কথাগুলো সংক্ষেপে ভাবার্থ হিসেবে লেখা। পুরো হাদীস ও তার ব্যাখ্যা একজন আলেমের কাছ থেকে মিলিয়ে নিন।"));
+  },true);
+}
+function aroNamaz(){
+  aroShow("ওযু ও নামায","ওযু, কোন ওয়াক্তে কত রাকাত, ঈদের নামায ও জানাযার নামাযের নিয়ম।",BACK,function(b){
+    rList(b,"ওযুর ফরয চারটি",["পুরো মুখ একবার ধোয়া","দুই হাত কনুইসহ একবার ধোয়া","মাথার চার ভাগের এক ভাগ মাসেহ করা","দুই পা টাখনুসহ একবার ধোয়া"],true,true);
+    rList(b,"ওযু করার নিয়ম",["নিয়ত করে বিসমিল্লাহ বলা","দুই হাত কবজি পর্যন্ত তিনবার ধোয়া","মিসওয়াক করা ও তিনবার কুলি করা","তিনবার নাকে পানি দিয়ে পরিষ্কার করা","পুরো মুখ তিনবার ধোয়া","প্রথমে ডান, পরে বাম হাত কনুইসহ তিনবার ধোয়া","পুরো মাথা একবার মাসেহ করা, তারপর কান ও ঘাড় মাসেহ করা","প্রথমে ডান, পরে বাম পা টাখনুসহ তিনবার ধোয়া"],true);
+    rList(b,"যেসব কারণে ওযু ভেঙে যায়",["পেশাব-পায়খানার রাস্তা দিয়ে কিছু বের হওয়া","শরীর থেকে রক্ত বা পুঁজ বের হয়ে গড়িয়ে পড়া","মুখ ভরে বমি হওয়া","শুয়ে বা হেলান দিয়ে ঘুমানো","বেহুঁশ হয়ে যাওয়া","নামাযে শব্দ করে হাসা"],false);
+    b.appendChild(el("h3","r-h","কোন নামায কত রাকাত"));
+    var w=el("div","table-wrap"),t=el("table"),tb=el("tbody"),hr=el("tr");
+    hr.appendChild(el("th",null,"নামায"));hr.appendChild(el("th",null,"রাকাত (ক্রম অনুযায়ী)"));
+    var th=el("thead");th.appendChild(hr);t.appendChild(th);
+    [["ফজর","২ সুন্নাত, ২ ফরয"],["যোহর","৪ সুন্নাত, ৪ ফরয, ২ সুন্নাত, ২ নফল"],["আসর","৪ সুন্নাত (গায়রে মুয়াক্কাদা), ৪ ফরয"],["মাগরিব","৩ ফরয, ২ সুন্নাত, ২ নফল"],["এশা","৪ সুন্নাত (গায়রে মুয়াক্কাদা), ৪ ফরয, ২ সুন্নাত, ২ নফল, ৩ বিতর (ওয়াজিব)"],["জুমা","৪ সুন্নাত, ২ ফরয, ৪ সুন্নাত, ২ সুন্নাত"]].forEach(function(r){
+      var tr=el("tr");tr.appendChild(el("td",null,r[0]));tr.appendChild(el("td",null,r[1]));tb.appendChild(tr);
+    });
+    t.appendChild(tb);w.appendChild(t);b.appendChild(w);
+    b.appendChild(el("h3","r-h","বিশেষ নামায"));
+    rList(b,"ঈদের নামায (২ রাকাত, ওয়াজিব)",["আযান ও ইকামত নেই। অতিরিক্ত ছয় তাকবীরসহ ঈদের দুই রাকাত ওয়াজিব নামাযের নিয়ত করুন।","তাকবীরে তাহরীমা বলে হাত বেঁধে সানা পড়ুন।","এরপর অতিরিক্ত তিন তাকবীর: প্রথম দুই তাকবীরে হাত কান পর্যন্ত তুলে ছেড়ে দিন, তৃতীয় তাকবীরে হাত তুলে বেঁধে নিন।","ইমাম সূরা ফাতিহা ও আরেকটি সূরা পড়বেন, তারপর রুকু-সিজদা করে প্রথম রাকাত শেষ করুন।","দ্বিতীয় রাকাতে ইমাম আগে সূরা ফাতিহা ও আরেকটি সূরা পড়বেন।","এরপর অতিরিক্ত তিন তাকবীর: প্রতিবার হাত তুলে ছেড়ে দিন। চতুর্থ তাকবীর বলে রুকুতে যান।","স্বাভাবিক নিয়মে নামায শেষ করুন। সালামের পর ইমামের খুতবা শুনুন।"],true);
+    rList(b,"জানাযার নামায (৪ তাকবীর, ফরযে কিফায়া)",["জানাযায় রুকু ও সিজদা নেই, পুরো নামায দাঁড়িয়ে পড়তে হয়। মাইয়্যেতের জন্য দোয়ার উদ্দেশ্যে জানাযার নামাযের নিয়ত করুন।","প্রথম তাকবীর: হাত কান পর্যন্ত তুলে বেঁধে নিন এবং সানা পড়ুন।","দ্বিতীয় তাকবীর: হাত না তুলে তাকবীর বলুন এবং দরূদ শরীফ পড়ুন।","তৃতীয় তাকবীর: হাত না তুলে তাকবীর বলুন এবং মাইয়্যেতের জন্য দোয়া পড়ুন।","চতুর্থ তাকবীর: তাকবীর বলে ডানে ও বামে সালাম ফেরান।","জানাযার দুই ফরয: চার তাকবীর বলা এবং দাঁড়িয়ে পড়া।"],true);
+    b.appendChild(el("p","aro-note",NOTE+" সানা, দরূদ ও জানাযার দোয়া উস্তাদের কাছ থেকে শিখে নিন।"));
+  },true);
+}
+var OPTS=[
+["ছোট ৩০টি সূরা","কুরআনের শেষ দিকের সূরা, অর্থ ও অডিওসহ",function(){aroSurahList(true);}],
+["সম্পূর্ণ কুরআন","১১৪টি সূরা, প্রতি আয়াতের নিচে বাংলা অর্থ",function(){aroSurahList(false);}],
+["দোয়া ও মাসআলা","কুরআনের দোয়া, প্রতিদিনের দোয়া, জরুরি মাসআলা",aroDua],
+["ফযীলতের আয়াত","যে আয়াত ও সূরার ফযীলত হাদীসে এসেছে",aroFazilat],
+["ওযু ও নামায","ওযু, রাকাত সংখ্যা, ঈদ ও জানাযার নামায",aroNamaz]
+];
+function aroMenu(box){
+  OPTS.forEach(function(o,i){
+    var b=el("button","aro-opt"),t=el("span");b.type="button";
+    b.appendChild(el("span","n",bn(i+1)));
+    t.appendChild(el("b",null,o[0]));t.appendChild(el("small",null,o[1]));b.appendChild(t);
+    b.addEventListener("click",function(){
+      tone(3);b.classList.remove("pop");void b.offsetWidth;b.classList.add("pop");
+      setTimeout(function(){$("sheet").hidden=true;o[2]();},260);
+    });
+    box.appendChild(b);
+  });
+}
+function aroHome(nav){
+  aroShow("আরো শিখুন","সূরা, পূর্ণ কুরআন, দোয়া, ফযীলতের আয়াত আর নামাযের নিয়ম। একটি বিষয় বেছে নিন।",null,function(b){
+    var m=el("div","aro-menu");aroMenu(m);b.appendChild(m);
+  },nav);
+}
+var BACK=["সব বিষয়ে ফিরে যান",function(){aroHome(true);}];
+aroMenu($("sheetMenu"));
+$("tabAro").addEventListener("click",function(e){e.preventDefault();$("sheet").hidden=false;});
+$("sheetX").addEventListener("click",function(){$("sheet").hidden=true;});
+$("sheetBg").addEventListener("click",function(){$("sheet").hidden=true;});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")$("sheet").hidden=true;});
+aroHome(false);
+
 /* ---------- phone app screens ---------- */
-var SCREEN={horof:"horof",tofat:"horof",harakat:"harakat",fatiha:"fatiha",quiz:"quiz",jhotpot:"khela",khela:"khela",path:"path"};
+var SCREEN={horof:"horof",tofat:"horof",harakat:"harakat",fatiha:"fatiha",quiz:"quiz",jhotpot:"khela",khela:"khela",path:"path",aro:"aro"};
 var mq=window.matchMedia("(max-width:720px)");
 function route(){
   var h=(location.hash||"#horof").slice(1), s=SCREEN[h]||"horof", app=mq.matches;
