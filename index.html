@@ -258,7 +258,7 @@ footer{padding:28px 0 48px;color:var(--muted);font-size:.92rem}
 .lesson .btn-row .btn{justify-content:center;min-height:50px;width:100%;border-radius:14px}
 @keyframes flip{from{transform:rotateY(90deg)}to{transform:none}}
 @media (max-width:720px){
-  .tabs{grid-template-columns:repeat(6,1fr)}
+  .tabs{grid-template-columns:repeat(5,1fr)}
   .tabs a{font-size:.72rem}
   .game{padding:14px}
   .cards{gap:8px}
@@ -306,7 +306,7 @@ details.r-card summary{font-family:var(--f-display);font-size:1.15rem;cursor:poi
 #aroBody audio{display:block;width:100%;max-width:420px;margin:6px 0 10px}
 #aroBody .table-wrap{max-width:760px;margin-bottom:10px}
 @media (max-width:720px){
-  .tabs{grid-template-columns:repeat(6,1fr);padding-left:4px;padding-right:4px}
+  .tabs{grid-template-columns:repeat(5,1fr);padding-left:4px;padding-right:4px}
   .tabs a{font-size:.68rem}
   .sheet{align-items:flex-end;padding:0}
   .sheet-card{border-radius:24px 24px 0 0;padding-bottom:calc(18px + env(safe-area-inset-bottom));max-height:88%}
@@ -372,6 +372,19 @@ body.app .block.on{animation:screenIn .34s cubic-bezier(.2,.8,.2,1)}
 .s-row .chip{white-space:nowrap}
 .s-row.new{animation:itemIn .6s cubic-bezier(.2,.8,.2,1)}
 @media (prefers-reduced-motion:reduce){.s-row.new{animation:none}}
+.block{scroll-margin-top:64px}
+.q-modes{display:flex;gap:8px;flex-wrap:wrap}
+.q-modes .chip{border:0;font:inherit;font-size:.92rem;font-weight:500;padding:5px 14px}
+.q-modes .chip[aria-pressed="true"]{background:var(--lapis);color:var(--on-lapis)}
+.quiz-q.bnq{font-family:var(--f-display);font-size:56px;line-height:1.6}
+.opts button.ar{font-family:var(--f-ar);font-size:36px;line-height:1.4;font-weight:400}
+.quiz .j-q{margin-bottom:-8px}
+.jump{display:none}
+@media (max-width:720px){
+  .jump{display:flex;gap:8px;flex-wrap:wrap}
+  .jump .chip{text-decoration:none}
+  .quiz-top{flex-direction:column}
+}
 @keyframes rise{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){body.app .block.on{animation:none}.ring .fg{transition:none}}
 </style>
@@ -386,7 +399,6 @@ body.app .block.on{animation:screenIn .34s cubic-bezier(.2,.8,.2,1)}
       <a href="#tofat">গুলিয়ে ফেলা হরফ</a>
       <a href="#quiz">কুইজ</a>
       <a href="#jhotpot">ঝটপট পাঠ</a>
-      <a href="#khela">খেলা</a>
       <a href="#path">শেখার পথ</a>
       <a href="#aro">আরো শিখুন</a>
     </nav>
@@ -401,6 +413,7 @@ body.app .block.on{animation:screenIn .34s cubic-bezier(.2,.8,.2,1)}
       <div class="hero-copy">
         <h1>আরবি হরফ চিনুন, শুদ্ধ করে কুরআন পড়ুন</h1>
         <p>সবক বাংলাভাষীদের জন্য কুরআন পড়া শেখার মাধ্যম। প্রতিটি হরফের নাম, মুখের কোন জায়গা থেকে বের হয় আর শব্দের ভেতরে তার চেহারা কেমন হয়, সব বাংলায় লেখা।</p>
+        <div class="jump"><a class="chip" href="#harakat">হরকত দেখুন</a><a class="chip" href="#tofat">গুলিয়ে ফেলা হরফ</a></div>
         <ul>
           <li>কোনো পাঠ তালাবদ্ধ নয়, যেখান থেকে ইচ্ছা শুরু করুন</li>
           <li>হরফে চাপ দিলেই মাখরাজ, রূপ আর হরকত বদলে যায়</li>
@@ -471,12 +484,10 @@ body.app .block.on{animation:screenIn .34s cubic-bezier(.2,.8,.2,1)}
     </div>
     <div class="quiz">
       <div class="quiz-top">
-        <div class="seg" role="group" aria-label="কুইজের ধরন">
-          <button type="button" id="modeL" aria-pressed="true">হরফ চেনা</button>
-          <button type="button" id="modeH" aria-pressed="false">হরকত পড়া</button>
-        </div>
+        <div class="q-modes" id="qModes" role="group" aria-label="কুইজের ধরন"></div>
         <span id="qCount"></span>
       </div>
+      <div class="j-q" id="qAsk"></div>
       <div class="quiz-q ar" id="qText" lang="ar"></div>
       <div class="opts" id="qOpts"></div>
       <div class="quiz-msg" id="qMsg" aria-live="polite"></div>
@@ -503,28 +514,6 @@ body.app .block.on{animation:screenIn .34s cubic-bezier(.2,.8,.2,1)}
       <div class="btn-row"><button class="btn" id="jGo" type="button"></button></div>
     </div>
     <div class="s-path" id="jList"></div>
-  </div>
-</section>
-
-<section class="block" id="khela">
-  <div class="wrap">
-    <div class="block-head">
-      <h2>খেলা: জোড়া মেলাও</h2>
-      <p>কার্ড উল্টাও, আরবি হরফের সাথে তার বাংলা নাম মেলাও। যত কম চালে পারবে, তত বেশি তারা পাবে। ধাপ কখনো শেষ হয় না!</p>
-    </div>
-    <div class="game">
-      <div class="game-top">
-        <span class="chip" id="gLevel"></span>
-        <span class="chip" id="gMoves"></span>
-        <span class="chip gold" id="gStars"></span>
-      </div>
-      <div class="cards" id="gCards"></div>
-      <div class="game-msg" id="gMsg" aria-live="polite"></div>
-      <div class="btn-row">
-        <button class="btn" id="gNext" type="button" hidden>পরের ধাপে যাও</button>
-        <button class="btn ghost" id="gAgain" type="button">কার্ড নতুন করে সাজাও</button>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -561,10 +550,9 @@ body.app .block.on{animation:screenIn .34s cubic-bezier(.2,.8,.2,1)}
 </div>
 
 <nav class="tabs" id="tabs" aria-label="মূল মেনু">
-  <a href="#horof"><span class="ic" lang="ar">ب</span>হরফ</a>
-  <a href="#harakat"><span class="ic" lang="ar">بَ</span>হরকত</a>
+  <a href="#horof"><span class="ic" lang="ar">ب</span>পরিচিতি</a>
   <a href="#quiz"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l3 3 5-6"></path></svg></span>কুইজ</a>
-  <a href="#khela"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 16.9 6.7 19.6l1-5.8L3.5 9.7l5.9-.9z"></path></svg></span>খেলা</a>
+  <a href="#jhotpot"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 16.9 6.7 19.6l1-5.8L3.5 9.7l5.9-.9z"></path></svg></span>খেলা</a>
   <a href="#path"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21V4"></path><path d="M6 5h11l-2 3.5l2 3.5H6"></path></svg></span>পথ</a>
   <a href="#aro" id="tabAro"><span class="ic"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle></svg></span>আরো</a>
 </nav>
@@ -667,7 +655,7 @@ function renderLetter(){
   $("lName").textContent=l[1];
   var tags=$("lTags");tags.textContent="";
   tags.appendChild(el("span","tag",ZONE[l[4]]));
-  tags.appendChild(el("span","tag"+(l[6]?" heavy":""),l[6]?"মোটা করে পড়ুন":"চিকন করে পড়ুন"));
+  tags.appendChild(el("span","tag"+(l[6]?" heavy":""),ch==="ر"?"যবর ও পেশে মোটা, যেরে চিকন":ch==="ا"?"আগের হরফের মতো মোটা বা চিকন":l[6]?"মোটা করে পড়ুন":"চিকন করে পড়ুন"));
   $("lMakhraj").textContent=l[5];
   var nj=NOJOIN.indexOf(ch)>=0, hz=ch==="ء";
   var f=hz?[ch,ch,ch,ch]:nj?[ch,ch,Z+ch,Z+ch]:[ch,ch+Z,Z+ch+Z,Z+ch];
@@ -725,39 +713,55 @@ var F=[
 ];
 /* ---------- quiz ---------- */
 var mode="L",qn=0,score=0,answered=false;
+var QP={L:"এই হরফের নাম কী?",R:"কোনটি এই হরফ?",F:"শব্দের মাঝখানের এই রূপটি কোন হরফের?",H:"এটি কীভাবে পড়তে হয়?",M:"এই হরফ মোটা না চিকন?",Z:"এই হরফ কোথা থেকে বের হয়?"};
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
 function ask(){
   answered=false;$("qMsg").textContent="";$("qMsg").style.color="";
   $("qCount").textContent="প্রশ্ন "+bn(qn+1)+" / ১০ । ঠিক হয়েছে "+bn(score);
   $("qNext").textContent=qn===9?"ফলাফল দেখুন":"পরের প্রশ্ন";
-  var q,right,opts=[];
+  var q,right,opts=[],qBn=false,oAr=false,keep=false;
+  $("qAsk").textContent=QP[mode];
   if(mode==="L"){
     var pick=shuffle(L.slice());
     q=pick[0][0];right=pick[0][1];opts=[right];
     for(var i=1;opts.length<4;i++){if(opts.indexOf(pick[i][1])<0)opts.push(pick[i][1]);}
-  }else{
+  }else if(mode==="H"){
     var ls=shuffle(L.filter(function(l){return l[0]!=="ا";}));
     var l=ls[0],m=Math.floor(Math.random()*6);
     q=sylAr(l,m);right=sylBn(l,m);opts=[right];
     shuffle([0,1,2,3,4,5]).forEach(function(k){var s=sylBn(l,k);if(opts.length<3&&opts.indexOf(s)<0)opts.push(s);});
     for(var k=1;opts.length<4;k++){var s2=sylBn(ls[k],m);if(opts.indexOf(s2)<0)opts.push(s2);}
+  }else if(mode==="R"){
+    var pr=shuffle(L.slice());
+    q=pr[0][1];right=pr[0][0];opts=[right];qBn=true;oAr=true;
+    for(var r=1;opts.length<4;r++){if(pr[r][1]!==q)opts.push(pr[r][0]);}
+  }else if(mode==="M"){
+    var pm=shuffle(L.filter(function(l){return "ارل".indexOf(l[0])<0;}))[0];
+    q=pm[0];right=pm[6]?"মোটা":"চিকন";opts=["মোটা","চিকন"];keep=true;
+  }else if(mode==="Z"){
+    var pz=shuffle(L.slice())[0];
+    q=pz[0];right=ZONE[pz[4]];opts=[ZONE.k,ZONE.j,ZONE.t,ZONE.f];keep=true;
+  }else{
+    var pf=shuffle(L.filter(function(l){return NOJOIN.indexOf(l[0])<0&&l[0]!=="ء";}));
+    q=Z+pf[0][0]+Z;right=pf[0][1];opts=[right];
+    for(var f=1;opts.length<4;f++){if(opts.indexOf(pf[f][1])<0)opts.push(pf[f][1]);}
   }
-  $("qText").textContent=q;
+  $("qText").textContent=q;$("qText").className="quiz-q "+(qBn?"bnq":"ar");$("qText").lang=qBn?"bn":"ar";
   var box=$("qOpts");box.textContent="";
-  shuffle(opts).forEach(function(o){
-    var b=el("button",null,o);b.type="button";
+  (keep?opts:shuffle(opts)).forEach(function(o){
+    var b=el("button",oAr?"ar":null,o);b.type="button";if(oAr)b.lang="ar";
     b.addEventListener("click",function(){
       if(answered)return;answered=true;
-      Array.prototype.forEach.call(box.children,function(x){if(x.textContent===right)x.className="right";});
+      Array.prototype.forEach.call(box.children,function(x){if(x.textContent===right)x.classList.add("right");});
       if(o===right){score++;$("qMsg").textContent="ঠিক হয়েছে।";$("qMsg").style.color="var(--good)";}
-      else{b.className="wrong";$("qMsg").textContent="ভুল হয়েছে। সঠিক উত্তর: "+right;$("qMsg").style.color="var(--bad)";}
+      else{b.classList.add("wrong");$("qMsg").textContent="ভুল হয়েছে। সঠিক উত্তর: "+right;$("qMsg").style.color="var(--bad)";}
       $("qCount").textContent="প্রশ্ন "+bn(qn+1)+" / ১০ । ঠিক হয়েছে "+bn(score);
     });
     box.appendChild(b);
   });
 }
 function finish(){
-  $("qText").textContent="";$("qOpts").textContent="";
+  $("qText").textContent="";$("qOpts").textContent="";$("qAsk").textContent="";
   $("qCount").textContent="শেষ";
   $("qMsg").style.color="";
   $("qMsg").textContent="১০টির মধ্যে "+bn(score)+"টি ঠিক হয়েছে। "+(score>=8?"পরের ধাপে যেতে পারেন।":"হরফগুলো আরেকবার দেখে আবার দিন।");
@@ -770,82 +774,20 @@ $("qNext").addEventListener("click",function(){
   if(qn===9){finish();return;}
   qn++;ask();
 });
-function setMode(m){mode=m;$("modeL").setAttribute("aria-pressed",m==="L"?"true":"false");$("modeH").setAttribute("aria-pressed",m==="H"?"true":"false");restart();}
-$("modeL").addEventListener("click",function(){setMode("L");});
-$("modeH").addEventListener("click",function(){setMode("H");});
+var QM=[["L","হরফ চেনা"],["R","নাম থেকে হরফ"],["F","জোড়া রূপ চেনা"],["H","হরকত পড়া"],["M","মোটা না চিকন"],["Z","কোথা থেকে বের হয়"]];
+function setMode(m){
+  mode=m;
+  Array.prototype.forEach.call($("qModes").children,function(b){b.setAttribute("aria-pressed",b.getAttribute("data-m")===m?"true":"false");});
+  restart();
+}
+QM.forEach(function(o){
+  var b=el("button","chip",o[1]);b.type="button";b.setAttribute("data-m",o[0]);b.setAttribute("aria-pressed",o[0]==="L"?"true":"false");
+  b.addEventListener("click",function(){setMode(o[0]);});
+  $("qModes").appendChild(b);
+});
 restart();
 
-/* ---------- game: match pairs ---------- */
-var GKEY="sabak-game",G={level:1,stars:0};
-try{var gs=JSON.parse(localStorage.getItem(GKEY)||"null");if(gs&&gs.level>0){G={level:gs.level,stars:gs.stars||0};}}catch(e){}
 var CHEER=["সাবাশ!","দারুণ হয়েছে!","মাশাআল্লাহ, চমৎকার!","বাহ, তুমি তো পারো!","একদম ঠিক!"];
-var gOpen=[],gMoves=0,gLeft=0,gLock=false;
-function gPairs(level){
-  var out=[],i,seen={};
-  if(level<=5){
-    for(i=0;i<6;i++){var l=L[((level-1)*6+i)%L.length];out.push([l[0],l[1],l[2]]);}
-  }else if(level%2===0){
-    var ls=shuffle(L.filter(function(x){return x[0]!=="ا";}));
-    for(i=0;out.length<6&&i<ls.length;i++){var m=Math.floor(Math.random()*6),b=sylBn(ls[i],m);if(!seen[b]){seen[b]=1;out.push([sylAr(ls[i],m),b,sylAr(ls[i],m)]);}}
-  }else{
-    var pick=shuffle(L.slice());
-    for(i=0;out.length<6&&i<pick.length;i++){if(!seen[pick[i][1]]){seen[pick[i][1]]=1;out.push([pick[i][0],pick[i][1],pick[i][2]]);}}
-  }
-  return out;
-}
-function gHud(){
-  $("gLevel").textContent="ধাপ "+bn(G.level);
-  $("gMoves").textContent="চাল "+bn(gMoves);
-  $("gStars").textContent="★ "+bn(G.stars);
-}
-function gStart(){
-  var pairs=gPairs(G.level),deck=[];
-  pairs.forEach(function(p,i){deck.push({id:i,t:p[0],ar:1,say:p[2]});deck.push({id:i,t:p[1],ar:0,say:p[2]});});
-  shuffle(deck);
-  gOpen=[];gMoves=0;gLeft=pairs.length;gLock=false;
-  var box=$("gCards");box.textContent="";
-  deck.forEach(function(c){
-    var b=el("button","card"+(c.ar?" ar-face":""));b.type="button";b.setAttribute("aria-label","উল্টানো কার্ড");
-    var s=el("span",null,c.t);if(c.ar)s.lang="ar";b.appendChild(s);
-    b.addEventListener("click",function(){gFlip(b,c);});
-    box.appendChild(b);
-  });
-  $("gMsg").textContent="";$("gNext").hidden=true;$("gAgain").hidden=false;gHud();
-}
-function gFlip(b,c){
-  if(gLock||b.classList.contains("up"))return;
-  b.classList.add("up");b.setAttribute("aria-label",c.t);
-  speak(c.say);
-  gOpen.push({b:b,c:c});
-  if(gOpen.length<2)return;
-  gMoves++;gHud();
-  var x=gOpen[0],y=gOpen[1];gOpen=[];
-  if(x.c.id===y.c.id){
-    x.b.classList.add("done");y.b.classList.add("done");x.b.disabled=true;y.b.disabled=true;
-    gLeft--;tone(1);
-    $("gMsg").textContent=CHEER[Math.floor(Math.random()*CHEER.length)];
-    if(gLeft===0)gWin();
-  }else{
-    gLock=true;$("gMsg").textContent="";tone(0);
-    setTimeout(function(){
-      x.b.classList.remove("up");y.b.classList.remove("up");
-      x.b.setAttribute("aria-label","উল্টানো কার্ড");y.b.setAttribute("aria-label","উল্টানো কার্ড");
-      gLock=false;
-    },800);
-  }
-}
-function gWin(){
-  var st=gMoves<=9?3:gMoves<=13?2:1,stars="";
-  for(var i=0;i<st;i++)stars+="★";
-  $("gMsg").textContent="ধাপ "+bn(G.level)+" শেষ! "+bn(gMoves)+" চালে মিলিয়েছ, পেলে "+stars;
-  tone(2);confetti();G.stars+=st;G.level++;
-  try{localStorage.setItem(GKEY,JSON.stringify(G));}catch(e){}
-  $("gStars").textContent="★ "+bn(G.stars);
-  $("gNext").hidden=false;$("gAgain").hidden=true;
-}
-$("gNext").addEventListener("click",gStart);
-$("gAgain").addEventListener("click",gStart);
-gStart();
 
 /* ---------- small sound effects ---------- */
 var actx=null;
@@ -1347,7 +1289,7 @@ document.addEventListener("keydown",function(e){if(e.key==="Escape")$("sheet").h
 aroHome(false);
 
 /* ---------- phone app screens ---------- */
-var SCREEN={horof:"horof",tofat:"horof",harakat:"harakat",quiz:"quiz",jhotpot:"khela",khela:"khela",path:"path",aro:"aro"};
+var SCREEN={horof:"horof",tofat:"horof",harakat:"horof",quiz:"quiz",jhotpot:"jhotpot",path:"path",aro:"aro"};
 var mq=window.matchMedia("(max-width:720px)");
 function route(){
   var h=(location.hash||"#horof").slice(1), s=SCREEN[h]||"horof", app=mq.matches;
@@ -1356,7 +1298,7 @@ function route(){
   Array.prototype.forEach.call($("tabs").children,function(a){
     if(a.getAttribute("href")==="#"+s)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current");
   });
-  if(app){ if(h==="tofat"){$("tofat").scrollIntoView();}else{window.scrollTo(0,0);} }
+  if(app){ if(h!==s&&$(h)){$(h).scrollIntoView();}else{window.scrollTo(0,0);} }
 }
 window.addEventListener("hashchange",route);
 if(mq.addEventListener){mq.addEventListener("change",route);}else if(mq.addListener){mq.addListener(route);}
