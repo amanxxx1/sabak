@@ -306,13 +306,60 @@ details.r-card summary{font-family:var(--f-display);font-size:1.15rem;cursor:poi
 #aroBody audio{display:block;width:100%;max-width:420px;margin:6px 0 10px}
 #aroBody .table-wrap{max-width:760px;margin-bottom:10px}
 @media (max-width:720px){
-  .tabs{grid-template-columns:repeat(7,1fr);padding-left:4px;padding-right:4px}
+  .tabs{grid-template-columns:repeat(6,1fr);padding-left:4px;padding-right:4px}
   .tabs a{font-size:.68rem}
   .sheet{align-items:flex-end;padding:0}
   .sheet-card{border-radius:24px 24px 0 0;padding-bottom:calc(18px + env(safe-area-inset-bottom));max-height:88%}
   .a-ar{font-size:27px}
 }
 @media (prefers-reduced-motion:reduce){.aro-opt.pop{animation:none}.sheet-card{animation:none}.aro-in{animation:none}}
+/* ---------- motion pass ---------- */
+:root{--glow-a:rgba(43,76,143,.16);--glow-b:rgba(154,108,18,.12)}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--glow-a:rgba(80,120,220,.22);--glow-b:rgba(226,183,94,.10)}
+}
+:root[data-theme="dark"]{--glow-a:rgba(80,120,220,.22);--glow-b:rgba(226,183,94,.10)}
+body::before{content:"";position:fixed;top:-20%;left:-10%;width:120%;height:60%;z-index:-1;pointer-events:none;background:radial-gradient(40% 50% at 25% 40%,var(--glow-a),transparent 70%),radial-gradient(35% 45% at 75% 30%,var(--glow-b),transparent 70%);animation:drift 16s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translate3d(-3%,0,0) scale(1)}to{transform:translate3d(4%,4%,0) scale(1.08)}}
+.stage{position:relative;overflow:hidden;background-size:180% 180%;animation:stageFlow 14s ease-in-out infinite alternate}
+@keyframes stageFlow{from{background-position:0% 0%}to{background-position:100% 100%}}
+.stage::after{content:"";position:absolute;top:-60%;left:-60%;width:50%;height:220%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.14),transparent);transform:rotate(18deg);animation:sheen 7s ease-in-out infinite;pointer-events:none}
+@keyframes sheen{0%,62%{transform:translateX(0) rotate(18deg)}100%{transform:translateX(420%) rotate(18deg)}}
+.big.swap{animation:letterIn .38s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes letterIn{from{transform:scale(.6) rotate(-8deg);opacity:0;filter:blur(6px)}to{transform:none;opacity:1;filter:none}}
+.btn,.letters button,.mark,.opts button,.j-opts button,.card,.aro-opt,.s-item,.tabs a,.chip,.ayah button{transition:transform .16s ease,background-color .2s ease,box-shadow .2s ease,border-color .2s ease}
+.btn:active,.letters button:active,.mark:active,.opts button:active,.j-opts button:active,.card:active,.aro-opt:active,.s-item:active{transform:scale(.94)}
+.letters button[aria-pressed="true"]{box-shadow:0 6px 16px rgba(35,64,122,.35);transform:translateY(-2px)}
+.tabs a[aria-current="page"] .ic{animation:bounce .45s cubic-bezier(.3,1.6,.5,1)}
+@keyframes bounce{0%{transform:translateY(0) scale(1)}40%{transform:translateY(-7px) scale(1.15)}100%{transform:none}}
+body.app .block.on{animation:screenIn .34s cubic-bezier(.2,.8,.2,1)}
+@keyframes screenIn{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+.block.on .marks .mark,.aro-in .aro-opt,.aro-in .s-item,.aro-in .r-card,.sheet .aro-opt{animation:itemIn .4s cubic-bezier(.2,.8,.2,1) backwards}
+.mark:nth-child(2),.aro-opt:nth-child(2),.s-item:nth-child(2),.r-card:nth-child(2){animation-delay:.04s}
+.mark:nth-child(3),.aro-opt:nth-child(3),.s-item:nth-child(3),.r-card:nth-child(3){animation-delay:.08s}
+.mark:nth-child(4),.aro-opt:nth-child(4),.s-item:nth-child(4),.r-card:nth-child(4){animation-delay:.12s}
+.mark:nth-child(5),.aro-opt:nth-child(5),.s-item:nth-child(5),.r-card:nth-child(5){animation-delay:.16s}
+.mark:nth-child(6),.aro-opt:nth-child(6),.s-item:nth-child(6),.r-card:nth-child(6){animation-delay:.2s}
+@keyframes itemIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.aro-opt.pop,.sheet .aro-opt.pop,.aro-in .aro-opt.pop{animation:pop .32s ease-out}
+.bar i{background:linear-gradient(90deg,var(--lapis),var(--gold))}
+.j-big.bnb{animation:letterIn .5s cubic-bezier(.2,.9,.3,1.2)}
+.j-opts button.right,.opts button.right{animation:okPulse .4s}
+@keyframes okPulse{0%{transform:scale(1)}50%{transform:scale(1.06)}100%{transform:scale(1)}}
+.j-opts button.wrong,.opts button.wrong{animation:shake .35s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.confetti{position:fixed;width:10px;height:14px;border-radius:3px;z-index:40;pointer-events:none}
+.player{position:sticky;top:52px;z-index:4;background:var(--bar-bg);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);padding:8px 0;display:flex;gap:12px;align-items:center;flex-wrap:wrap;max-width:760px}
+.a-row{cursor:pointer;border-radius:14px;transition:background-color .3s ease,box-shadow .3s ease,padding .3s ease}
+.a-row.now{background:var(--lapis-soft);box-shadow:inset 4px 0 0 var(--gold);padding-left:14px;padding-right:12px}
+.w-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.w-chips .chip{border:0;font:inherit;font-size:.92rem;font-weight:500;padding:5px 14px}
+.w-chips .chip.on{background:var(--lapis);color:var(--on-lapis)}
+.ayah button.pop{animation:pop .3s ease-out}
+#aroBody .word-panel{max-width:760px}
+@media (prefers-reduced-motion:reduce){
+  body::before,.stage,.stage::after,.big.swap,.tabs a[aria-current="page"] .ic,body.app .block.on,.block.on .marks .mark,.aro-in .aro-opt,.aro-in .s-item,.aro-in .r-card,.sheet .aro-opt,.j-big.bnb,.j-opts button.right,.opts button.right,.j-opts button.wrong,.opts button.wrong,.ayah button.pop{animation:none}
+}
 @keyframes rise{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){body.app .block.on{animation:none}.ring .fg{transition:none}}
 </style>
@@ -325,7 +372,6 @@ details.r-card summary{font-family:var(--f-display);font-size:1.15rem;cursor:poi
       <a href="#horof">হরফ</a>
       <a href="#harakat">হরকত</a>
       <a href="#tofat">গুলিয়ে ফেলা হরফ</a>
-      <a href="#fatiha">ফাতিহা</a>
       <a href="#quiz">কুইজ</a>
       <a href="#jhotpot">ঝটপট পাঠ</a>
       <a href="#khela">খেলা</a>
@@ -405,21 +451,6 @@ details.r-card summary{font-family:var(--f-display);font-size:1.15rem;cursor:poi
   </div>
 </section>
 
-<section class="block" id="fatiha">
-  <div class="wrap">
-    <div class="block-head">
-      <h2>সূরা ফাতিহা, শব্দ ধরে ধরে</h2>
-      <p>যেকোনো শব্দে চাপ দিন। নিচে তার বাংলা উচ্চারণ আর শব্দটিতে কোন নিয়ম আছে তা দেখাবে। বাংলা বানান শুধু সহায়ক, আসল উচ্চারণ আরবি হরফ দেখেই পড়তে হবে।</p>
-    </div>
-    <div class="ayat" id="ayat" dir="rtl" lang="ar"></div>
-    <div class="word-panel" id="wordPanel" aria-live="polite">
-      <span class="ar" id="wAr" lang="ar"></span>
-      <div><b id="wBn"></b><span class="note" id="wNote"></span></div>
-      <button class="btn ghost" id="wSpeak" type="button">শুনুন</button>
-    </div>
-  </div>
-</section>
-
 <section class="block" id="quiz">
   <div class="wrap">
     <div class="block-head">
@@ -488,7 +519,7 @@ details.r-card summary{font-family:var(--f-display);font-size:1.15rem;cursor:poi
   <div class="wrap">
     <div class="block-head">
       <h2>শেখার পথ</h2>
-      <p>ছয়টি ধাপ ক্রমানুসারে। শেষ হলে টিক দিন, এই ব্রাউজারে মনে রাখা হবে।</p>
+      <p>দশটি ধাপ ক্রমানুসারে। শেষ হলে টিক দিন, এই ব্রাউজারে মনে রাখা হবে।</p>
       <div class="bar" aria-hidden="true"><i id="bar"></i></div>
       <span class="note" id="barText"></span>
     </div>
@@ -519,7 +550,6 @@ details.r-card summary{font-family:var(--f-display);font-size:1.15rem;cursor:poi
 <nav class="tabs" id="tabs" aria-label="মূল মেনু">
   <a href="#horof"><span class="ic" lang="ar">ب</span>হরফ</a>
   <a href="#harakat"><span class="ic" lang="ar">بَ</span>হরকত</a>
-  <a href="#fatiha"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10 5 7 4.5 4 5v13c3-.5 6 0 8 1.5c2-1.5 5-2 8-1.5V5c-3-.5-6 0-8 1.5z"></path><path d="M12 6.5v13"></path></svg></span>ফাতিহা</a>
   <a href="#quiz"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l3 3 5-6"></path></svg></span>কুইজ</a>
   <a href="#khela"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 16.9 6.7 19.6l1-5.8L3.5 9.7l5.9-.9z"></path></svg></span>খেলা</a>
   <a href="#path"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21V4"></path><path d="M6 5h11l-2 3.5l2 3.5H6"></path></svg></span>পথ</a>
@@ -620,6 +650,7 @@ var cur=1;
 function renderLetter(){
   var l=L[cur],ch=l[0];
   $("bigLetter").textContent=ch;
+  var bl=$("bigLetter");bl.classList.remove("swap");void bl.offsetWidth;bl.classList.add("swap");
   $("lName").textContent=l[1];
   var tags=$("lTags");tags.textContent="";
   tags.appendChild(el("span","tag",ZONE[l[4]]));
@@ -679,25 +710,6 @@ var F=[
 [["اهْدِنَا","ইহদিনা","ه-তে সুকুন: কণ্ঠের শুরু থেকে নরম হা।"],["الصِّرَاطَ","স সিরাতা","সোয়াদে তাশদীদ, মোটা। শেষে তোয়া মোটা।"],["الْمُسْتَقِيمَ","ল মুসতাক্বীম","ক্বাফ মোটা, ইয়া-তে টান।"]],
 [["صِرَاطَ","সিরাতা","সোয়াদ ও তোয়া মোটা।"],["الَّذِينَ","ল্লাযীনা","লামে তাশদীদ। ذ দাঁতের আগা থেকে।"],["أَنْعَمْتَ","আন‘আমতা","নূন সাকিনের পর আইন: নূন স্পষ্ট করে পড়ুন (ইযহার)।"],["عَلَيْهِمْ","‘আলাইহিম","যবরের পর ইয়া সুকুন: নরম করে পড়ুন।"],["غَيْرِ","গাইরি","গাইন মোটা, গড়গড়ার আওয়াজে।"],["الْمَغْضُوبِ","ল মাগদূবি","গাইনে সুকুন, দোয়াদ মোটা, ওয়াও-তে টান।"],["عَلَيْهِمْ","‘আলাইহিম","মীম সাকিনের পর ওয়াও: মীম স্পষ্ট করে পড়ুন।"],["وَلَا","ওয়ালা","লামের পর আলিফ।"],["الضَّالِّينَ","দ্দ-ল্লীন","দোয়াদের পর আলিফে লম্বা টান (মদ্দে লাযিম), তারপর লামে তাশদীদ।"]]
 ];
-var selW=null;
-function showWord(w,btn){
-  if(selW)selW.setAttribute("aria-pressed","false");
-  selW=btn;btn.setAttribute("aria-pressed","true");
-  $("wAr").textContent=w[0];$("wBn").textContent=w[1];$("wNote").textContent=w[2];
-  $("wSpeak").onclick=function(){speak(w[0]);};
-}
-F.forEach(function(ay,i){
-  var row=el("div","ayah");
-  ay.forEach(function(w,j){
-    var b=el("button",null,w[0]);b.type="button";b.setAttribute("aria-pressed","false");
-    b.addEventListener("click",function(){showWord(w,b);});
-    row.appendChild(b);
-    if(i===0&&j===0)showWord(w,b);
-  });
-  var n=el("span","num",bn(i+1));n.lang="bn";row.appendChild(n);
-  $("ayat").appendChild(row);
-});
-
 /* ---------- quiz ---------- */
 var mode="L",qn=0,score=0,answered=false;
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
@@ -813,7 +825,7 @@ function gWin(){
   var st=gMoves<=9?3:gMoves<=13?2:1,stars="";
   for(var i=0;i<st;i++)stars+="★";
   $("gMsg").textContent="ধাপ "+bn(G.level)+" শেষ! "+bn(gMoves)+" চালে মিলিয়েছ, পেলে "+stars;
-  tone(2);G.stars+=st;G.level++;
+  tone(2);confetti();G.stars+=st;G.level++;
   try{localStorage.setItem(GKEY,JSON.stringify(G));}catch(e){}
   $("gStars").textContent="★ "+bn(G.stars);
   $("gNext").hidden=false;$("gAgain").hidden=true;
@@ -954,7 +966,7 @@ function jFinish(){
   var b=$("jBody");b.textContent="";
   J.xp+=jGain;J.lesson++;
   try{localStorage.setItem(JKEY,JSON.stringify(J));}catch(e){}
-  tone(2);
+  tone(2);confetti();
   b.appendChild(el("div","j-big bnb","★ +"+bn(jGain)));
   b.appendChild(el("p","j-q","পাঠ "+bn(J.lesson-1)+" শেষ! দারুণ করেছ।"));
   $("jMsg").textContent="";$("jGo").textContent="পরের পাঠে যাও";$("jGo").hidden=false;
@@ -974,7 +986,11 @@ var STEPS=[
 ["হরকত ও তানভীন","যবর, যের, পেশ এবং দুই যবর, দুই যের, দুই পেশ।",1],
 ["সুকুন, তাশদীদ ও মদ","হরফ মিলিয়ে পড়া, দুইবার পড়া, এক আলিফ টানা।",1],
 ["তাজবীদের নিয়ম","গুন্নাহ, নূন সাকিন ও তানভীনের চার নিয়ম, মীম সাকিন, আল্লাহ শব্দের লাম।",0],
-["সূরা পড়া","সূরা ফাতিহা শব্দ ধরে ধরে, তারপর ছোট সূরা ও নামাযের দোয়া।",1]
+["সূরা ফাতিহা পড়া","আরো শিখুন অংশের ছোট অংশ পড়ুন থেকে সূরা ফাতিহা শব্দ ধরে ধরে পড়া।",1],
+["ছোট সূরা শব্দ ধরে পড়া","ইখলাস, ফালাক, নাস, কাউসার ও আসর শব্দ ধরে পড়া, প্রতিটি শব্দের উচ্চারণ শোনা।",1],
+["ছোট ৩০টি সূরা","সূরা নাস থেকে বুরূজ পর্যন্ত অর্থ বুঝে পড়া, তিলাওয়াত শুনে নিজের পড়া মিলিয়ে নেওয়া।",1],
+["ওযু ও নামাযের নিয়ম","ওযু, রাকাত সংখ্যা, নামাযের ফরয এবং প্রয়োজনীয় দোয়া শেখা।",1],
+["পূর্ণ কুরআন তিলাওয়াত","প্রথম থেকে শেষ পর্যন্ত দেখে দেখে পড়া, প্রতিদিন অল্প অল্প করে।",1]
 ];
 var KEY="sabak-path",done=[];
 try{done=JSON.parse(localStorage.getItem(KEY)||"[]")||[];}catch(e){done=[];}
@@ -999,7 +1015,7 @@ bar();
 /* ---------- more: surahs, full Quran, duas, virtues, prayer guide ---------- */
 var SN=["আল-ফাতিহা","আল-বাকারা","আলে ইমরান","আন-নিসা","আল-মায়িদা","আল-আনআম","আল-আরাফ","আল-আনফাল","আত-তাওবা","ইউনুস","হুদ","ইউসুফ","আর-রাদ","ইবরাহীম","আল-হিজর","আন-নাহল","বনী ইসরাঈল","আল-কাহফ","মারইয়াম","ত্বা-হা","আল-আম্বিয়া","আল-হাজ্জ","আল-মুমিনুন","আন-নূর","আল-ফুরকান","আশ-শুআরা","আন-নামল","আল-কাসাস","আল-আনকাবুত","আর-রূম","লুকমান","আস-সাজদা","আল-আহযাব","সাবা","ফাতির","ইয়াসীন","আস-সাফফাত","সোয়াদ","আয-যুমার","গাফির (আল-মুমিন)","হা-মীম সাজদা (ফুসসিলাত)","আশ-শূরা","আয-যুখরুফ","আদ-দুখান","আল-জাসিয়া","আল-আহকাফ","মুহাম্মাদ","আল-ফাতহ","আল-হুজুরাত","ক্বাফ","আয-যারিয়াত","আত-তূর","আন-নাজম","আল-ক্বামার","আর-রাহমান","আল-ওয়াকিয়া","আল-হাদীদ","আল-মুজাদালা","আল-হাশর","আল-মুমতাহিনা","আস-সাফ","আল-জুমুআ","আল-মুনাফিকুন","আত-তাগাবুন","আত-তালাক","আত-তাহরীম","আল-মুলক","আল-কলম","আল-হাক্কাহ","আল-মাআরিজ","নূহ","আল-জিন","আল-মুযযাম্মিল","আল-মুদ্দাসসির","আল-কিয়ামাহ","আদ-দাহর (আল-ইনসান)","আল-মুরসালাত","আন-নাবা","আন-নাযিআত","আবাসা","আত-তাকভীর","আল-ইনফিতার","আল-মুতাফফিফীন","আল-ইনশিকাক","আল-বুরূজ","আত-তারিক","আল-আলা","আল-গাশিয়াহ","আল-ফাজর","আল-বালাদ","আশ-শামস","আল-লাইল","আদ-দুহা","আল-ইনশিরাহ","আত-তীন","আল-আলাক","আল-কদর","আল-বাইয়্যিনাহ","আয-যিলযাল","আল-আদিয়াত","আল-কারিআহ","আত-তাকাসুর","আল-আসর","আল-হুমাযাহ","আল-ফীল","কুরাইশ","আল-মাউন","আল-কাউসার","আল-কাফিরুন","আন-নাসর","আল-লাহাব","আল-ইখলাস","আল-ফালাক","আন-নাস"];
 var QAPI="https://api.alquran.cloud/v1/surah/",QEDS="/editions/quran-uthmani,bn.bengali",QAUDIO="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/";
-var aCache={};
+var aCache={},aroStop=null,QAYAH="https://cdn.islamic.network/quran/audio/128/ar.alafasy/",QWORD="https://audio.qurancdn.com/wbw/";
 function aFetch(s,from,to){
   var key=s+":"+(from||0)+"-"+(to||0);
   if(aCache[key])return Promise.resolve(aCache[key]);
@@ -1008,27 +1024,29 @@ function aFetch(s,from,to){
     var ar=null,bg=null,out=[],i;
     j.data.forEach(function(e){if(e.edition.identifier==="quran-uthmani")ar=e.ayahs;else bg=e.ayahs;});
     if(!ar)throw new Error("data");
-    for(i=0;i<ar.length;i++)out.push({n:ar[i].numberInSurah,ar:ar[i].text,bn:bg&&bg[i]?bg[i].text:""});
+    for(i=0;i<ar.length;i++)out.push({g:ar[i].number,n:ar[i].numberInSurah,ar:ar[i].text,bn:bg&&bg[i]?bg[i].text:""});
     aCache[key]=out;return out;
   });
 }
-function aRows(box,s,from,to){
+function aRows(box,s,from,to,cb){
   box.textContent="";box.appendChild(el("p","note","লোড হচ্ছে…"));
   aFetch(s,from,to).then(function(rows){
-    box.textContent="";
+    box.textContent="";var els=[];
     rows.forEach(function(r){
       var d=el("div","a-row"),a=el("div","a-ar",r.ar),p=el("div","a-bn");a.lang="ar";
       p.appendChild(el("b",null,bn(r.n)));p.appendChild(document.createTextNode(r.bn));
-      d.appendChild(a);d.appendChild(p);box.appendChild(d);
+      d.appendChild(a);d.appendChild(p);box.appendChild(d);els.push(d);
     });
+    if(cb)cb(rows,els);
   },function(){
     box.textContent="";
     box.appendChild(el("p","note","আয়াত আনা গেল না। ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন।"));
     var b=el("button","btn ghost","আবার চেষ্টা করুন");b.type="button";
-    b.addEventListener("click",function(){aRows(box,s,from,to);});box.appendChild(b);
+    b.addEventListener("click",function(){aRows(box,s,from,to,cb);});box.appendChild(b);
   });
 }
 function aroShow(title,lead,back,build,nav){
+  if(aroStop){aroStop();aroStop=null;}
   $("aroTitle").textContent=title;$("aroLead").textContent=lead;
   var bk=$("aroBack");bk.hidden=!back;bk.textContent=back?back[0]:"";bk.onclick=back?back[1]:null;
   var b=$("aroBody");b.textContent="";b.classList.remove("aro-in");void b.offsetWidth;b.classList.add("aro-in");
@@ -1079,13 +1097,38 @@ function aroSurahList(short){
 }
 function aroSurah(n,back){
   aroShow("সূরা "+SN[n-1],"সূরা নম্বর "+bn(n)+"। অর্থ: মুহিউদ্দীন খান। তিলাওয়াত: মিশারি আল-আফাসি।",back,function(b){
-    var ab=el("button","btn ghost","অডিও শুনুন"),rows=el("div","ayat-read");ab.type="button";
-    ab.addEventListener("click",function(){
-      var au=document.createElement("audio");au.controls=true;au.src=QAUDIO+n+".mp3";
-      ab.parentNode.replaceChild(au,ab);
+    var bar=el("div","player"),pb=el("button","btn","অডিও শুনুন"),st=el("span","note","আয়াত লোড হচ্ছে…"),rows=el("div","ayat-read");
+    var data=[],els=[],au=null,idx=-1,playing=false;
+    pb.type="button";bar.appendChild(pb);bar.appendChild(st);b.appendChild(bar);b.appendChild(rows);
+    function mark(i){
+      els.forEach(function(e,k){e.classList.toggle("now",k===i);});
+      if(i>=0&&els[i]){
+        try{els[i].scrollIntoView({block:"center",behavior:"smooth"});}catch(e){els[i].scrollIntoView();}
+        st.textContent="আয়াত "+bn(data[i].n)+" পড়া হচ্ছে";
+      }
+    }
+    function stop(){playing=false;if(au)au.pause();pb.textContent=idx>=0?"আবার চালু করুন":"অডিও শুনুন";}
+    function playAt(i){
+      if(au){au.onended=null;au.onerror=null;au.pause();}
+      if(i>=data.length){idx=-1;au=null;stop();mark(-1);st.textContent="সূরা শেষ হয়েছে";return;}
+      idx=i;playing=true;pb.textContent="থামান";mark(i);
+      au=new Audio(QAYAH+data[i].g+".mp3");
+      au.onended=function(){if(playing)playAt(idx+1);};
+      au.onerror=function(){stop();st.textContent="অডিও আনা গেল না। আবার চেষ্টা করুন।";};
       var p=au.play();if(p&&p.catch)p.catch(function(){});
+    }
+    pb.addEventListener("click",function(){
+      if(!data.length)return;
+      if(playing){stop();st.textContent="থেমে আছে";}
+      else if(au&&idx>=0){playing=true;pb.textContent="থামান";mark(idx);var p=au.play();if(p&&p.catch)p.catch(function(){});}
+      else{playAt(0);}
     });
-    b.appendChild(ab);b.appendChild(rows);aRows(rows,n);
+    aRows(rows,n,0,0,function(dt,es){
+      data=dt;els=es;
+      es.forEach(function(x,i){x.addEventListener("click",function(){playAt(i);});});
+      st.textContent="আয়াতে চাপ দিলে সেখান থেকে পড়া শুরু হবে";
+    });
+    aroStop=stop;
   },true);
 }
 var QDUA=[
@@ -1163,7 +1206,84 @@ function aroNamaz(){
     b.appendChild(el("p","aro-note",NOTE+" সানা, দরূদ ও জানাযার দোয়া উস্তাদের কাছ থেকে শিখে নিন।"));
   },true);
 }
+function confetti(){
+  try{
+    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+    var cols=["#F0C96A","#9DBBF5","#5CC492","#F08A7E","#FFFFFF"];
+    for(var i=0;i<36;i++){(function(k){
+      var p=el("span","confetti");p.style.background=cols[k%cols.length];p.style.left="50%";p.style.top="42%";
+      document.body.appendChild(p);
+      var ang=Math.random()*Math.PI*2,dist=120+Math.random()*220,dx=Math.cos(ang)*dist,dy=Math.sin(ang)*dist+180;
+      var a=p.animate([{transform:"translate(0,0) rotate(0deg)",opacity:1},{transform:"translate("+dx+"px,"+dy+"px) rotate("+(Math.random()*720-360)+"deg)",opacity:0}],{duration:1100+Math.random()*600,easing:"cubic-bezier(.15,.7,.3,1)"});
+      a.onfinish=function(){p.remove();};
+    })(i);}
+  }catch(e){}
+}
+function wAudio(s,a,w,text){
+  function p3(x){x=String(x);while(x.length<3)x="0"+x;return x;}
+  try{
+    var au=new Audio(QWORD+p3(s)+"_"+p3(a)+"_"+p3(w)+".mp3");
+    au.onerror=function(){speak(text);};
+    var p=au.play();if(p&&p.catch)p.catch(function(){});
+  }catch(e){speak(text);}
+}
+var WSUR=[1,112,113,114,108,103];
+function aroWords(s){
+  aroShow("ছোট অংশ পড়ুন","শব্দ ধরে ধরে পড়ার অনুশীলন। সূরা বাছুন, তারপর যেকোনো শব্দে চাপ দিয়ে তার উচ্চারণ শুনুন।",BACK,function(b){
+    var chips=el("div","w-chips"),area=el("div","ayat"),panel=el("div","word-panel"),pa=el("span","ar"),pm=el("div"),pb=el("b"),pn=el("span","note"),ps=el("button","btn ghost","শুনুন"),cur=null;
+    WSUR.forEach(function(n){
+      var c=el("button","chip"+(n===s?" on":""),SN[n-1]);c.type="button";
+      c.addEventListener("click",function(){tone(3);aroWords(n);});chips.appendChild(c);
+    });
+    area.dir="rtl";area.lang="ar";pa.lang="ar";ps.type="button";
+    pm.appendChild(pb);pm.appendChild(pn);panel.appendChild(pa);panel.appendChild(pm);panel.appendChild(ps);
+    b.appendChild(chips);b.appendChild(area);b.appendChild(panel);
+    function pick(btn,w,play){
+      if(cur)cur.setAttribute("aria-pressed","false");
+      cur=btn;btn.setAttribute("aria-pressed","true");
+      btn.classList.remove("pop");void btn.offsetWidth;btn.classList.add("pop");
+      pa.textContent=w.t;pb.textContent=w.bn;pn.textContent=w.note;
+      ps.onclick=function(){wAudio(s,w.a,w.i,w.t);};
+      if(play)wAudio(s,w.a,w.i,w.t);
+    }
+    function draw(ayahs){
+      area.textContent="";
+      ayahs.forEach(function(ay,ai){
+        var row=el("div","ayah"),num=el("span","num",bn(ay.n));num.lang="bn";
+        ay.words.forEach(function(w,wi){
+          w.a=ay.n;w.i=wi+1;
+          var x=el("button",null,w.t);x.type="button";x.setAttribute("aria-pressed","false");
+          x.addEventListener("click",function(){pick(x,w,true);});
+          row.appendChild(x);
+          if(ai===0&&wi===0)pick(x,w,false);
+        });
+        row.appendChild(num);area.appendChild(row);
+      });
+    }
+    if(s===1){
+      draw(F.map(function(ay,i){return {n:i+1,words:ay.map(function(w){return {t:w[0],bn:w[1],note:w[2]};})};}));
+    }else{
+      var ld=el("p","note","লোড হচ্ছে…");ld.dir="ltr";ld.lang="bn";area.appendChild(ld);
+      aFetch(s).then(function(rows){
+        draw(rows.map(function(r,idx){
+          var toks=r.ar.split(" ").filter(Boolean),words=[];
+          if(idx===0)toks=toks.slice(4);
+          toks.forEach(function(t){
+            if(/[ء-يٱ]/.test(t)||!words.length)words.push({t:t,bn:"আয়াত "+bn(r.n)+"-এর অর্থ",note:r.bn});
+            else words[words.length-1].t+=" "+t;
+          });
+          return {n:r.n,words:words};
+        }));
+      },function(){
+        area.textContent="";
+        var er=el("p","note","সূরাটি আনা গেল না। ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন।");er.dir="ltr";er.lang="bn";area.appendChild(er);
+      });
+    }
+  },true);
+}
+window.addEventListener("hashchange",function(){if(location.hash!=="#aro"&&aroStop){aroStop();}});
 var OPTS=[
+["ছোট অংশ পড়ুন","ফাতিহা ও ছোট সূরা, শব্দ ধরে ধরে পড়া ও শোনা",function(){aroWords(1);}],
 ["ছোট ৩০টি সূরা","কুরআনের শেষ দিকের সূরা, অর্থ ও অডিওসহ",function(){aroSurahList(true);}],
 ["সম্পূর্ণ কুরআন","১১৪টি সূরা, প্রতি আয়াতের নিচে বাংলা অর্থ",function(){aroSurahList(false);}],
 ["দোয়া ও মাসআলা","কুরআনের দোয়া, প্রতিদিনের দোয়া, জরুরি মাসআলা",aroDua],
@@ -1196,7 +1316,7 @@ document.addEventListener("keydown",function(e){if(e.key==="Escape")$("sheet").h
 aroHome(false);
 
 /* ---------- phone app screens ---------- */
-var SCREEN={horof:"horof",tofat:"horof",harakat:"harakat",fatiha:"fatiha",quiz:"quiz",jhotpot:"khela",khela:"khela",path:"path",aro:"aro"};
+var SCREEN={horof:"horof",tofat:"horof",harakat:"harakat",quiz:"quiz",jhotpot:"khela",khela:"khela",path:"path",aro:"aro"};
 var mq=window.matchMedia("(max-width:720px)");
 function route(){
   var h=(location.hash||"#horof").slice(1), s=SCREEN[h]||"horof", app=mq.matches;
