@@ -1,0 +1,334 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/android.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+
+      - name: Write the Android project
+        run: |
+          mkdir -p app/src/main/java/uk/sabak/app app/src/main/assets app/src/main/res/values app/src/main/res/drawable app/src/main/res/mipmap-anydpi-v26
+          cat > settings.gradle <<'EOF'
+          pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
+          dependencyResolutionManagement { repositories { google(); mavenCentral() } }
+          rootProject.name = "Sabak"
+          include ':app'
+          EOF
+          cat > build.gradle <<'EOF'
+          plugins { id 'com.android.application' version '8.5.2' apply false }
+          EOF
+          cat > gradle.properties <<'EOF'
+          org.gradle.jvmargs=-Xmx2g -Dfile.encoding=UTF-8
+          android.useAndroidX=false
+          EOF
+          cat > app/build.gradle <<'EOF'
+          plugins { id 'com.android.application' }
+          android {
+              namespace 'uk.sabak.app'
+              compileSdk 34
+              defaultConfig {
+                  applicationId 'uk.sabak.app'
+                  minSdk 26
+                  targetSdk 34
+                  versionCode((System.getenv('VCODE') ?: '1').toInteger())
+                  versionName '1.' + (System.getenv('VCODE') ?: '1')
+              }
+              signingConfigs {
+                  release {
+                      storeFile file('../sabak.jks')
+                      storePassword System.getenv('KS_PASS')
+                      keyAlias 'sabak'
+                      keyPassword System.getenv('KS_PASS')
+                  }
+              }
+              buildTypes {
+                  release {
+                      minifyEnabled false
+                      signingConfig signingConfigs.release
+                  }
+              }
+              compileOptions {
+                  sourceCompatibility JavaVersion.VERSION_1_8
+                  targetCompatibility JavaVersion.VERSION_1_8
+              }
+          }
+          tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+          EOF
+          cat > app/src/main/AndroidManifest.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+              <uses-permission android:name="android.permission.INTERNET" />
+              <queries>
+                  <intent><action android:name="android.intent.action.TTS_SERVICE" /></intent>
+                  <intent><action android:name="android.intent.action.VIEW" /><data android:scheme="https" /></intent>
+                  <intent><action android:name="android.intent.action.DIAL" /></intent>
+                  <intent><action android:name="android.intent.action.SENDTO" /><data android:scheme="mailto" /></intent>
+              </queries>
+              <application
+                  android:label="সবক"
+                  android:icon="@mipmap/ic_launcher"
+                  android:roundIcon="@mipmap/ic_launcher"
+                  android:theme="@style/SabakTheme"
+                  android:allowBackup="true"
+                  android:usesCleartextTraffic="false">
+                  <activity
+                      android:name=".MainActivity"
+                      android:exported="true"
+                      android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboardHidden|uiMode">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
+          EOF
+          cat > app/src/main/res/values/styles.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <color name="bg">#070B1A</color>
+              <style name="SabakTheme" parent="android:Theme.Material.NoActionBar">
+                  <item name="android:windowBackground">@color/bg</item>
+                  <item name="android:statusBarColor">@color/bg</item>
+                  <item name="android:navigationBarColor">@color/bg</item>
+              </style>
+          </resources>
+          EOF
+          cat > app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+              <background android:drawable="@color/bg" />
+              <foreground android:drawable="@drawable/ic_fg" />
+          </adaptive-icon>
+          EOF
+          cat > app/src/main/res/drawable/ic_fg.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <vector xmlns:android="http://schemas.android.com/apk/res/android"
+              android:width="108dp" android:height="108dp"
+              android:viewportWidth="108" android:viewportHeight="108">
+              <path android:fillColor="#F3C969" android:pathData="M31,46 C38,42 45,42 53,46 L53,73 C45,69 38,69 31,73 Z" />
+              <path android:fillColor="#F3C969" android:pathData="M55,46 C63,42 70,42 77,46 L77,73 C70,69 63,69 55,73 Z" />
+              <path android:fillColor="#8FD3FF" android:pathData="M54,26 L56.4,32.6 L63,35 L56.4,37.4 L54,44 L51.6,37.4 L45,35 L51.6,32.6 Z" />
+          </vector>
+          EOF
+          cat > app/src/main/assets/tts.js <<'EOF'
+          (function(){
+            if(window.__sabakTTS||!window.SabakTTS)return;window.__sabakTTS=1;
+            var V=[{name:"Android Arabic",lang:"ar-SA",localService:true,"default":false,voiceURI:"android-ar"}];
+            function U(t){this.text=t;this.lang="";this.rate=1;this.pitch=1;this.volume=1;this.voice=null;this.onend=null;this.onerror=null;this.onstart=null;}
+            var cur=null;
+            var S={speaking:false,pending:false,paused:false,onvoiceschanged:null,
+              getVoices:function(){return V;},
+              speak:function(u){cur=u;S.speaking=true;try{SabakTTS.speak(String(u.text||""),String((u.voice&&u.voice.lang)||u.lang||"ar-SA"),Number(u.rate)||1,Number(u.pitch)||1);}catch(e){S.speaking=false;}},
+              cancel:function(){try{SabakTTS.stop();}catch(e){}S.speaking=false;cur=null;},
+              pause:function(){},resume:function(){},
+              addEventListener:function(){},removeEventListener:function(){}};
+            window.__sabakDone=function(){S.speaking=false;var u=cur;cur=null;if(u&&u.onend){try{u.onend({});}catch(e){}}};
+            try{Object.defineProperty(window,"speechSynthesis",{value:S,configurable:true,writable:true});}catch(e){}
+            window.SpeechSynthesisUtterance=U;
+          })();
+          EOF
+          cat > app/src/main/java/uk/sabak/app/MainActivity.java <<'EOF'
+          package uk.sabak.app;
+
+          import android.app.Activity;
+          import android.content.Intent;
+          import android.graphics.Color;
+          import android.net.Uri;
+          import android.os.Bundle;
+          import android.speech.tts.TextToSpeech;
+          import android.speech.tts.UtteranceProgressListener;
+          import android.webkit.JavascriptInterface;
+          import android.webkit.WebChromeClient;
+          import android.webkit.WebResourceError;
+          import android.webkit.WebResourceRequest;
+          import android.webkit.WebSettings;
+          import android.webkit.WebView;
+          import android.webkit.WebViewClient;
+          import java.io.ByteArrayOutputStream;
+          import java.io.InputStream;
+          import java.util.Locale;
+
+          public class MainActivity extends Activity {
+              private static final String HOME = "https://sabak.uk/";
+              private WebView web;
+              private TextToSpeech tts;
+              private boolean ttsReady = false;
+              private String shim = "";
+
+              private static final String OFFLINE =
+                  "<!DOCTYPE html><html lang='bn'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>" +
+                  "<style>body{margin:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;" +
+                  "background:#070B1A;color:#EAF0FF;font-family:sans-serif;text-align:center;padding:24px;box-sizing:border-box}" +
+                  "h1{font-size:2.4rem;margin:0;color:#8FD3FF}p{margin:0;color:#9AA7C7}" +
+                  "button{font-size:1.1rem;padding:12px 28px;border:0;border-radius:14px;background:#8FD3FF;color:#06101F;font-weight:bold}</style></head>" +
+                  "<body><h1>সবক</h1><p>ইন্টারনেট সংযোগ পাওয়া যাচ্ছে না।<br>সংযোগ চালু করে আবার চেষ্টা করুন।</p>" +
+                  "<button onclick=\"location.href='" + HOME + "'\">আবার চেষ্টা করুন</button></body></html>";
+
+              @Override
+              protected void onCreate(Bundle state) {
+                  super.onCreate(state);
+                  getWindow().setStatusBarColor(Color.parseColor("#070B1A"));
+                  getWindow().setNavigationBarColor(Color.parseColor("#070B1A"));
+                  shim = readAsset("tts.js");
+
+                  web = new WebView(this);
+                  web.setBackgroundColor(Color.parseColor("#070B1A"));
+                  setContentView(web);
+
+                  WebSettings s = web.getSettings();
+                  s.setJavaScriptEnabled(true);
+                  s.setDomStorageEnabled(true);
+                  s.setDatabaseEnabled(true);
+                  s.setMediaPlaybackRequiresUserGesture(false);
+                  s.setUserAgentString(s.getUserAgentString() + " SabakApp/1");
+
+                  tts = new TextToSpeech(this, status -> {
+                      if (status == TextToSpeech.SUCCESS) {
+                          ttsReady = true;
+                          tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                              @Override public void onStart(String id) {}
+                              @Override public void onDone(String id) { finished(); }
+                              @Override public void onError(String id) { finished(); }
+                          });
+                      }
+                  });
+
+                  web.addJavascriptInterface(new Bridge(), "SabakTTS");
+                  web.setWebChromeClient(new WebChromeClient());
+                  web.setWebViewClient(new WebViewClient() {
+                      @Override
+                      public boolean shouldOverrideUrlLoading(WebView v, WebResourceRequest r) {
+                          Uri u = r.getUrl();
+                          String host = u.getHost();
+                          String scheme = u.getScheme();
+                          if ("https".equals(scheme) && host != null && (host.equals("sabak.uk") || host.equals("www.sabak.uk"))) {
+                              return false;
+                          }
+                          try { startActivity(new Intent(Intent.ACTION_VIEW, u)); } catch (Exception e) { }
+                          return true;
+                      }
+
+                      @Override
+                      public void onPageFinished(WebView v, String url) {
+                          if (!shim.isEmpty()) v.evaluateJavascript(shim, null);
+                      }
+
+                      @Override
+                      public void onReceivedError(WebView v, WebResourceRequest r, WebResourceError e) {
+                          if (r.isForMainFrame()) {
+                              v.loadDataWithBaseURL(null, OFFLINE, "text/html", "utf-8", null);
+                          }
+                      }
+                  });
+
+                  if (state != null) web.restoreState(state);
+                  else web.loadUrl(HOME);
+              }
+
+              private void finished() {
+                  runOnUiThread(() -> web.evaluateJavascript("window.__sabakDone&&window.__sabakDone()", null));
+              }
+
+              private String readAsset(String name) {
+                  try (InputStream in = getAssets().open(name)) {
+                      ByteArrayOutputStream out = new ByteArrayOutputStream();
+                      byte[] buf = new byte[4096];
+                      int n;
+                      while ((n = in.read(buf)) > 0) out.write(buf, 0, n);
+                      return out.toString("UTF-8");
+                  } catch (Exception e) {
+                      return "";
+                  }
+              }
+
+              private class Bridge {
+                  @JavascriptInterface
+                  public void speak(String text, String lang, float rate, float pitch) {
+                      if (!ttsReady || tts == null) { finished(); return; }
+                      int r = tts.setLanguage(Locale.forLanguageTag(lang));
+                      if (r == TextToSpeech.LANG_MISSING_DATA || r == TextToSpeech.LANG_NOT_SUPPORTED) {
+                          tts.setLanguage(new Locale("ar"));
+                      }
+                      tts.setSpeechRate(rate);
+                      tts.setPitch(pitch);
+                      tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "u" + System.nanoTime());
+                  }
+
+                  @JavascriptInterface
+                  public void stop() {
+                      if (tts != null) tts.stop();
+                  }
+              }
+
+              @Override
+              protected void onSaveInstanceState(Bundle out) {
+                  super.onSaveInstanceState(out);
+                  web.saveState(out);
+              }
+
+              @Override
+              public void onBackPressed() {
+                  if (web.canGoBack()) web.goBack();
+                  else super.onBackPressed();
+              }
+
+              @Override
+              protected void onPause() {
+                  super.onPause();
+                  if (tts != null) tts.stop();
+              }
+
+              @Override
+              protected void onDestroy() {
+                  if (tts != null) tts.shutdown();
+                  if (web != null) web.destroy();
+                  super.onDestroy();
+              }
+          }
+          EOF
+
+      - name: Create a signing key
+        run: |
+          KS_PASS=$(openssl rand -hex 16)
+          echo "::add-mask::$KS_PASS"
+          echo "KS_PASS=$KS_PASS" >> "$GITHUB_ENV"
+          keytool -genkeypair -keystore sabak.jks -alias sabak -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass "$KS_PASS" -keypass "$KS_PASS" -dname "CN=Sabak, O=Sabak, C=BD"
+
+      - name: Build the APK
+        env:
+          VCODE: ${{ github.run_number }}
+        run: |
+          gradle --no-daemon assembleRelease
+          cp app/build/outputs/apk/release/app-release.apk sabak.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sabak-apk
+          path: sabak.apk
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-${{ github.run_number }}
+          name: সবক অ্যাপ ${{ github.run_number }}
+          body: সবক অ্যান্ড্রয়েড অ্যাপ। sabak.apk ফাইলটি ডাউনলোড করে ফোনে ইনস্টল করুন।
+          files: sabak.apk
+          make_latest: true
