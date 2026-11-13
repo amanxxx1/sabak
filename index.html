@@ -505,6 +505,18 @@ table{background:transparent}
 .grid9 button{aspect-ratio:1;border-radius:18px;border:1px solid var(--line);background:var(--surface);font-family:var(--f-ar);font-size:44px;line-height:1.3;color:var(--ink);padding:0 0 8px;animation:itemIn .25s backwards;transition:transform .16s ease}
 .grid9 button:active{transform:scale(.92)}
 .grid9 button.bad{animation:shake .3s;border-color:var(--bad)}
+.q-wait{min-height:30px;display:flex;flex-direction:column;gap:6px;opacity:0;transition:opacity .2s ease}
+.q-wait.go{opacity:1}
+.q-wait span{font-size:.92rem;color:var(--muted)}
+.q-wait i{display:block;height:4px;width:0;border-radius:99px;background:linear-gradient(90deg,#8FD3FF,#F3C969);box-shadow:0 0 10px rgba(143,211,255,.6)}
+.q-wait.go i{animation:qfill 1s linear forwards}
+@keyframes qfill{to{width:100%}}
+.opts button:disabled{cursor:default}
+.opts button.wrong:disabled{opacity:.7}
+.a-bn{cursor:pointer;border-radius:10px;padding:2px 6px;margin:0 -6px;transition:background-color .2s ease,box-shadow .2s ease}
+.a-bn:hover{background:rgba(243,201,105,.08)}
+.a-bn.say{background:rgba(243,201,105,.16);box-shadow:inset 3px 0 0 var(--gold);color:var(--ink)}
+.bn-note{color:var(--gold);margin-top:-2px}
 @keyframes rise{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){body.app .block.on{animation:none}.ring .fg{transition:none}}
 </style>
@@ -621,7 +633,8 @@ table{background:transparent}
       <div class="quiz-q ar" id="qText" lang="ar"></div>
       <div class="opts" id="qOpts"></div>
       <div class="quiz-msg" id="qMsg" aria-live="polite"></div>
-      <div class="btn-row"><button class="btn" id="qNext" type="button">পরের প্রশ্ন</button></div>
+      <div class="q-wait" id="qWait" aria-live="polite"><span></span><i></i></div>
+      <div class="btn-row"><button class="btn" id="qNext" type="button" hidden>আবার শুরু করুন</button></div>
     </div>
   </div>
 </section>
@@ -925,34 +938,43 @@ function qShow(o,askEl,textEl,box,onPick){
     box.appendChild(b);
   });
 }
-function qHud(){$("qCount").textContent="প্রশ্ন "+bn(qn+1)+" / ১০ । ঠিক হয়েছে "+bn(score);}
+function qHud(){$("qCount").textContent="প্রশ্ন "+bn(qn+1)+" / ১০ । প্রথম চেষ্টায় ঠিক "+bn(score);}
+var qTry=0,qTimer=null;
 function ask(){
-  answered=false;$("qMsg").textContent="";$("qMsg").style.color="";qHud();
-  $("qNext").textContent=qn===9?"ফলাফল দেখুন":"পরের প্রশ্ন";
+  clearTimeout(qTimer);
+  answered=false;qTry=0;$("qMsg").textContent="";$("qMsg").style.color="";qHud();
+  $("qNext").hidden=true;$("qWait").classList.remove("go");
   var o=makeQ(mode,Math.random),box=$("qOpts");
   qShow(o,$("qAsk"),$("qText"),box,function(t,b){
-    if(answered)return;answered=true;
+    if(answered)return;
     if(o.say)speak(o.say);
-    Array.prototype.forEach.call(box.children,function(x){if(x.textContent===o.right)x.classList.add("right");});
-    if(t===o.right){score++;tone(1);$("qMsg").textContent="ঠিক হয়েছে।";$("qMsg").style.color="var(--good)";}
-    else{b.classList.add("wrong");tone(0);$("qMsg").textContent="ভুল হয়েছে। সঠিক উত্তর: "+o.right;$("qMsg").style.color="var(--bad)";}
-    qHud();
+    if(t===o.right){
+      answered=true;b.classList.add("right");
+      if(qTry===0)score++;
+      tone(1);
+      $("qMsg").textContent=qTry===0?"ঠিক হয়েছে।":"এবার ঠিক হয়েছে।";$("qMsg").style.color="var(--good)";
+      Array.prototype.forEach.call(box.children,function(x){x.disabled=true;});
+      qHud();
+      var w=$("qWait");w.querySelector("span").textContent=qn===9?"ফলাফল আসছে…":"পরের প্রশ্ন আসছে…";
+      w.classList.remove("go");void w.offsetWidth;w.classList.add("go");
+      qTimer=setTimeout(function(){if(qn===9){finish();}else{qn++;ask();}},1000);
+    }else{
+      qTry++;b.classList.add("wrong");b.disabled=true;tone(0);
+      Array.prototype.forEach.call(box.children,function(x){if(x.textContent===o.right)x.classList.add("right");});
+      $("qMsg").textContent="ভুল হয়েছে। সবুজ দাগের উত্তরটিতে চাপ দিয়ে আবার চেষ্টা করুন।";$("qMsg").style.color="var(--bad)";
+    }
   });
 }
 function finish(){
+  clearTimeout(qTimer);$("qWait").classList.remove("go");
   $("qText").textContent="";$("qOpts").textContent="";$("qAsk").textContent="";
   $("qCount").textContent="শেষ";$("qMsg").style.color="";
-  $("qMsg").textContent="১০টির মধ্যে "+bn(score)+"টি ঠিক হয়েছে। "+(score>=8?"এই ধরনটি পার হয়েছেন।":"আরেকবার দেখে আবার দিন।");
-  $("qNext").textContent="আবার শুরু করুন";qn=-1;
+  $("qMsg").textContent="১০টির মধ্যে "+bn(score)+"টি প্রথম চেষ্টাতেই ঠিক হয়েছে। "+(score>=8?"এই ধরনটি পার হয়েছেন।":"আরেকবার দেখে আবার দিন।");
+  $("qNext").textContent="আবার শুরু করুন";$("qNext").hidden=false;qn=-1;
   pQuiz(mode,score);tone(2);if(score>=8)confetti();
 }
 function restart(){qn=0;score=0;ask();}
-$("qNext").addEventListener("click",function(){
-  if(qn===-1){restart();return;}
-  if(!answered){$("qMsg").style.color="";$("qMsg").textContent="আগে একটি উত্তর বাছুন।";return;}
-  if(qn===9){finish();return;}
-  qn++;ask();
-});
+$("qNext").addEventListener("click",restart);
 var QM=[["L","হরফ চেনা"],["R","নাম থেকে হরফ"],["F","জোড়া রূপ চেনা"],["H","হরকত পড়া"],["M","মোটা না চিকন"],["Z","কোথা থেকে বের হয়"],["S","চিহ্ন চেনা"],["T","তাজবীদের নিয়ম"]];
 function setMode(m){
   mode=m;
@@ -1449,6 +1471,9 @@ function aRows(box,s,from,to,cb){
     rows.forEach(function(r){
       var d=el("div","a-row"),a=el("div","a-ar",r.ar),p=el("div","a-bn");a.lang="ar";
       p.appendChild(el("b",null,bn(r.n)));p.appendChild(document.createTextNode(r.bn));
+      p.setAttribute("role","button");p.tabIndex=0;p.setAttribute("aria-label","আয়াত "+bn(r.n)+"-এর বাংলা অর্থ শুনুন");
+      p.addEventListener("click",function(e){e.stopPropagation();bnSay(r.bn,p);});
+      p.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();e.stopPropagation();bnSay(r.bn,p);}});
       d.appendChild(a);d.appendChild(p);box.appendChild(d);els.push(d);
     });
     if(cb)cb(rows,els);
@@ -1459,7 +1484,33 @@ function aRows(box,s,from,to,cb){
     b.addEventListener("click",function(){aRows(box,s,from,to,cb);});box.appendChild(b);
   });
 }
+var bnCur=null;
+function bnNote(p,msg){
+  var n=p.nextSibling;
+  if(n&&n.className==="note bn-note"){n.textContent=msg;return;}
+  var x=el("p","note bn-note",msg);p.parentNode.insertBefore(x,p.nextSibling);
+}
+function bnSay(text,p){
+  try{
+    var ss=window.speechSynthesis;
+    if(!ss){bnNote(p,"এই ব্রাউজারে বাংলা শোনা যায় না। অন্য ব্রাউজারে খুলে দেখুন।");return;}
+    if(bnCur===p&&ss.speaking){ss.cancel();p.classList.remove("say");bnCur=null;return;}
+    var vs=ss.getVoices()||[],bv=vs.filter(function(x){return /^bn/i.test(x.lang);});
+    var v=bv.filter(function(x){return /female|woman/i.test(x.name);})[0]||bv[0];
+    if(!v){bnNote(p,"এই ফোনে বাংলা কণ্ঠ নেই। ফোনের Settings থেকে Text-to-speech-এ বাংলা ভাষা যোগ করলে শোনা যাবে।");return;}
+    if(aroStop)aroStop();
+    ss.cancel();
+    if(bnCur)bnCur.classList.remove("say");
+    var u=new SpeechSynthesisUtterance(text);u.lang=v.lang;u.voice=v;u.rate=0.95;
+    bnCur=p;p.classList.add("say");
+    u.onend=function(){p.classList.remove("say");if(bnCur===p)bnCur=null;};
+    u.onerror=u.onend;
+    ss.speak(u);
+  }catch(e){}
+}
+try{if(window.speechSynthesis)window.speechSynthesis.getVoices();}catch(e){}
 function aroShow(title,lead,back,build,nav){
+  try{if(bnCur&&window.speechSynthesis){window.speechSynthesis.cancel();bnCur.classList.remove("say");bnCur=null;}}catch(e){}
   if(aroStop){aroStop();aroStop=null;}
   $("aroTitle").textContent=title;$("aroLead").textContent=lead;
   var bk=$("aroBack");bk.hidden=!back;bk.textContent=back?back[0]:"";bk.onclick=back?back[1]:null;
@@ -1536,7 +1587,7 @@ function aroSurahList(short){
   },true);
 }
 function aroSurah(n,back){
-  aroShow("সূরা "+SN[n-1],"সূরা নম্বর "+bn(n)+"। অর্থ: মুহিউদ্দীন খান। তিলাওয়াত: মিশারি আল-আফাসি।",back,function(b){
+  aroShow("সূরা "+SN[n-1],"সূরা নম্বর "+bn(n)+"। অর্থ: মুহিউদ্দীন খান। তিলাওয়াত: মিশারি আল-আফাসি। বাংলা অর্থে চাপ দিলে বাংলায় শোনা যাবে।",back,function(b){
     var bar=el("div","player"),pb=el("button","btn","অডিও শুনুন"),st=el("span","note","আয়াত লোড হচ্ছে…"),rows=el("div","ayat-read");
     var data=[],els=[],au=null,idx=-1,playing=false;
     pb.type="button";bar.appendChild(pb);bar.appendChild(st);b.appendChild(bar);b.appendChild(rows);
