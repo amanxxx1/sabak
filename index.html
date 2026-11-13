@@ -513,10 +513,6 @@ table{background:transparent}
 @keyframes qfill{to{width:100%}}
 .opts button:disabled{cursor:default}
 .opts button.wrong:disabled{opacity:.7}
-.a-bn{cursor:pointer;border-radius:10px;padding:2px 6px;margin:0 -6px;transition:background-color .2s ease,box-shadow .2s ease}
-.a-bn:hover{background:rgba(243,201,105,.08)}
-.a-bn.say{background:rgba(243,201,105,.16);box-shadow:inset 3px 0 0 var(--gold);color:var(--ink)}
-.bn-note{color:var(--gold);margin-top:-2px}
 @keyframes rise{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){body.app .block.on{animation:none}.ring .fg{transition:none}}
 </style>
@@ -1471,9 +1467,6 @@ function aRows(box,s,from,to,cb){
     rows.forEach(function(r){
       var d=el("div","a-row"),a=el("div","a-ar",r.ar),p=el("div","a-bn");a.lang="ar";
       p.appendChild(el("b",null,bn(r.n)));p.appendChild(document.createTextNode(r.bn));
-      p.setAttribute("role","button");p.tabIndex=0;p.setAttribute("aria-label","আয়াত "+bn(r.n)+"-এর বাংলা অর্থ শুনুন");
-      p.addEventListener("click",function(e){e.stopPropagation();bnSay(r.bn,p);});
-      p.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();e.stopPropagation();bnSay(r.bn,p);}});
       d.appendChild(a);d.appendChild(p);box.appendChild(d);els.push(d);
     });
     if(cb)cb(rows,els);
@@ -1484,33 +1477,7 @@ function aRows(box,s,from,to,cb){
     b.addEventListener("click",function(){aRows(box,s,from,to,cb);});box.appendChild(b);
   });
 }
-var bnCur=null;
-function bnNote(p,msg){
-  var n=p.nextSibling;
-  if(n&&n.className==="note bn-note"){n.textContent=msg;return;}
-  var x=el("p","note bn-note",msg);p.parentNode.insertBefore(x,p.nextSibling);
-}
-function bnSay(text,p){
-  try{
-    var ss=window.speechSynthesis;
-    if(!ss){bnNote(p,"এই ব্রাউজারে বাংলা শোনা যায় না। অন্য ব্রাউজারে খুলে দেখুন।");return;}
-    if(bnCur===p&&ss.speaking){ss.cancel();p.classList.remove("say");bnCur=null;return;}
-    var vs=ss.getVoices()||[],bv=vs.filter(function(x){return /^bn/i.test(x.lang);});
-    var v=bv.filter(function(x){return /female|woman/i.test(x.name);})[0]||bv[0];
-    if(!v){bnNote(p,"এই ফোনে বাংলা কণ্ঠ নেই। ফোনের Settings থেকে Text-to-speech-এ বাংলা ভাষা যোগ করলে শোনা যাবে।");return;}
-    if(aroStop)aroStop();
-    ss.cancel();
-    if(bnCur)bnCur.classList.remove("say");
-    var u=new SpeechSynthesisUtterance(text);u.lang=v.lang;u.voice=v;u.rate=0.95;
-    bnCur=p;p.classList.add("say");
-    u.onend=function(){p.classList.remove("say");if(bnCur===p)bnCur=null;};
-    u.onerror=u.onend;
-    ss.speak(u);
-  }catch(e){}
-}
-try{if(window.speechSynthesis)window.speechSynthesis.getVoices();}catch(e){}
 function aroShow(title,lead,back,build,nav){
-  try{if(bnCur&&window.speechSynthesis){window.speechSynthesis.cancel();bnCur.classList.remove("say");bnCur=null;}}catch(e){}
   if(aroStop){aroStop();aroStop=null;}
   $("aroTitle").textContent=title;$("aroLead").textContent=lead;
   var bk=$("aroBack");bk.hidden=!back;bk.textContent=back?back[0]:"";bk.onclick=back?back[1]:null;
@@ -1587,7 +1554,7 @@ function aroSurahList(short){
   },true);
 }
 function aroSurah(n,back){
-  aroShow("সূরা "+SN[n-1],"সূরা নম্বর "+bn(n)+"। অর্থ: মুহিউদ্দীন খান। তিলাওয়াত: মিশারি আল-আফাসি। বাংলা অর্থে চাপ দিলে বাংলায় শোনা যাবে।",back,function(b){
+  aroShow("সূরা "+SN[n-1],"সূরা নম্বর "+bn(n)+"। অর্থ: মুহিউদ্দীন খান। তিলাওয়াত: মিশারি আল-আফাসি।",back,function(b){
     var bar=el("div","player"),pb=el("button","btn","অডিও শুনুন"),st=el("span","note","আয়াত লোড হচ্ছে…"),rows=el("div","ayat-read");
     var data=[],els=[],au=null,idx=-1,playing=false;
     pb.type="button";bar.appendChild(pb);bar.appendChild(st);b.appendChild(bar);b.appendChild(rows);
