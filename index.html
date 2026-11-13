@@ -479,6 +479,32 @@ table{background:transparent}
   .tab-ind{transition:none}
   .stage{transition:none}
 }
+/* ---------- arcade games ---------- */
+.gm-box{max-width:560px}
+.gm-hud{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.gm-hud .btn{margin-left:auto;padding:5px 12px;font-size:.9rem;box-shadow:none}
+.gm-prompt{font-family:var(--f-display);font-size:1.5rem;text-align:center;margin:6px 0 10px}
+.gm-prompt b{color:var(--gold);text-shadow:0 0 18px rgba(243,201,105,.5)}
+.gm-box .bar{max-width:none;margin-bottom:10px}
+.arena{position:relative;height:400px;border-radius:22px;border:1px solid var(--line);background:rgba(255,255,255,.04);overflow:hidden;touch-action:manipulation}
+.arena.hurt{animation:shake .3s}
+.bub{position:absolute;top:-64px;width:60px;height:60px;border-radius:50%;border:0;display:flex;align-items:center;justify-content:center;font-family:var(--f-ar);font-size:32px;line-height:1;color:#06101F;background:radial-gradient(circle at 30% 30%,#FFFFFF,#8FD3FF 55%,#5B8CFF);box-shadow:0 0 22px rgba(143,211,255,.7);padding:0 0 6px}
+.bub.gold{background:radial-gradient(circle at 30% 30%,#FFFFFF,#F3C969 55%,#D99A2B);box-shadow:0 0 22px rgba(243,201,105,.7)}
+.bub.pop-bad{background:var(--bad);box-shadow:0 0 22px rgba(255,143,143,.8)}
+.tf-card{margin:8px auto 16px;width:min(250px,78%);aspect-ratio:3/4;border-radius:24px;background:linear-gradient(160deg,rgba(28,47,122,.92),rgba(59,28,107,.92));border:1px solid var(--stage-line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:0 24px 60px rgba(40,70,200,.35);touch-action:pan-y;-webkit-user-select:none;user-select:none}
+.tf-card .ar{font-size:92px;line-height:1.5;color:#FFFFFF;text-shadow:0 0 28px rgba(143,211,255,.75)}
+.tf-card .nm{font-family:var(--f-display);font-size:2rem;color:var(--gold)}
+.tf-card.in{animation:itemIn .22s cubic-bezier(.2,.8,.2,1)}
+.tf-card.bad{animation:shake .3s}
+.tf-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tf-row button{min-height:58px;border-radius:16px;border:2px solid var(--line);background:rgba(255,255,255,.05);font-size:1.2rem;font-weight:600;transition:transform .16s ease}
+.tf-row button:active{transform:scale(.94)}
+.tf-row .no{border-color:var(--bad);color:var(--bad)}
+.tf-row .yes{border-color:var(--good);color:var(--good)}
+.grid9{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:360px;margin:0 auto}
+.grid9 button{aspect-ratio:1;border-radius:18px;border:1px solid var(--line);background:var(--surface);font-family:var(--f-ar);font-size:44px;line-height:1.3;color:var(--ink);padding:0 0 8px;animation:itemIn .25s backwards;transition:transform .16s ease}
+.grid9 button:active{transform:scale(.92)}
+.grid9 button.bad{animation:shake .3s;border-color:var(--bad)}
 @keyframes rise{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){body.app .block.on{animation:none}.ring .fg{transition:none}}
 </style>
@@ -496,6 +522,7 @@ table{background:transparent}
       <a href="#quiz">কুইজ</a>
       <a href="#exam">পরীক্ষা</a>
       <a href="#jhotpot">ঝটপট পাঠ</a>
+      <a href="#games">খেলাঘর</a>
       <a href="#path">শেখার পথ</a>
       <a href="#aro">আরো শিখুন</a>
     </nav>
@@ -614,6 +641,7 @@ table{background:transparent}
     <div class="block-head">
       <h2>ঝটপট পাঠ</h2>
       <p>প্রতি সবকে তিনটি নতুন হরফ। আগে দেখো আর শোনো, তারপর ছোট ছোট প্রশ্নের উত্তর দাও। ভুল হলে প্রশ্নটি একটু পরে আবার ফিরে আসবে।</p>
+      <div class="jump"><a class="chip" href="#games">নতুন খেলা খেলো</a></div>
     </div>
     <div class="lesson">
       <div class="game-top">
@@ -627,6 +655,16 @@ table{background:transparent}
       <div class="btn-row"><button class="btn" id="jGo" type="button"></button></div>
     </div>
     <div class="s-path" id="jList"></div>
+  </div>
+</section>
+
+<section class="block" id="games">
+  <div class="wrap">
+    <div class="block-head">
+      <h2>খেলাঘর</h2>
+      <p>তিনটি ঝটপট খেলা। একটি বেছে নাও, স্কোর করো, নিজের রেকর্ড ভাঙো।</p>
+    </div>
+    <div id="gmBody"></div>
   </div>
 </section>
 
@@ -1168,6 +1206,162 @@ $("jGo").addEventListener("click",function(){
 });
 jHome();
 
+/* ---------- arcade games ---------- */
+var GM={a:0,b:0,c:0},gmStop=null;
+try{var g0=JSON.parse(localStorage.getItem("sabak-games")||"null");if(g0){GM.a=g0.a||0;GM.b=g0.b||0;GM.c=g0.c||0;}}catch(e){}
+function gmEnd(){if(gmStop){var s=gmStop;gmStop=null;s();}}
+function gmFrame(){
+  gmEnd();
+  var b=$("gmBody"),box=el("div","gm-box"),hud=el("div","gm-hud"),back=el("button","btn ghost","খেলা বদলাও");
+  b.textContent="";back.type="button";back.addEventListener("click",gmHome);
+  box.appendChild(hud);b.appendChild(box);
+  try{$("games").scrollIntoView();}catch(e){}
+  return {box:box,hud:hud,back:back};
+}
+function gmOver(id,score,title,again){
+  gmEnd();
+  var b=$("gmBody"),c=el("div","quiz"),row=el("div","btn-row"),rec=score>GM[id],a=el("button","btn","আবার খেলো"),h=el("button","btn ghost","অন্য খেলা");
+  if(rec){GM[id]=score;try{localStorage.setItem("sabak-games",JSON.stringify(GM));}catch(e){}}
+  b.textContent="";
+  c.appendChild(el("div","j-q",title+" শেষ"));
+  c.appendChild(el("div","j-big bnb",bn(score)));
+  c.appendChild(el("p","j-q",rec&&score>0?"নতুন রেকর্ড! দারুণ খেলেছ।":"তোমার সেরা স্কোর "+bn(GM[id])));
+  a.type="button";h.type="button";a.addEventListener("click",again);h.addEventListener("click",gmHome);
+  row.appendChild(a);row.appendChild(h);c.appendChild(row);b.appendChild(c);
+  tone(2);if(rec&&score>0)confetti();
+}
+function gmClock(tm,bi,getEnd,onEnd){
+  return setInterval(function(){
+    var left=getEnd()-Date.now();
+    bi.style.width=Math.max(0,Math.min(100,left/300))+"%";
+    tm.textContent="সময় "+bn(Math.max(0,Math.ceil(left/1000)));
+    if(left<=0)onEnd();
+  },100);
+}
+function gmFall(){
+  var f=gmFrame(),sc=el("span","chip",""),lv=el("span","chip gold",""),pr=el("div","gm-prompt"),ar=el("div","arena");
+  var score=0,lives=3,hits=0,combo=0,target=null,alive=true,timer=null,gap=950,dur=4200,gen=0;
+  f.hud.appendChild(sc);f.hud.appendChild(lv);f.hud.appendChild(f.back);f.box.appendChild(pr);f.box.appendChild(ar);
+  function hud(){sc.textContent="স্কোর "+bn(score);lv.textContent=lives>0?new Array(lives+1).join("♥"):"০";}
+  function pick(){
+    gen++;ar.textContent="";
+    target=L[Math.floor(Math.random()*L.length)];
+    pr.textContent="";pr.appendChild(document.createTextNode("ধরো: "));pr.appendChild(el("b",null,target[1]));
+  }
+  function miss(){
+    if(!alive)return;
+    lives--;combo=0;tone(0);hud();
+    ar.classList.remove("hurt");void ar.offsetWidth;ar.classList.add("hurt");
+    if(lives<=0){alive=false;gmOver("a",score,"হরফ ধরো",gmFall);}
+  }
+  function restart(){clearInterval(timer);timer=setInterval(spawn,gap);}
+  function spawn(){
+    if(!alive)return;
+    var l=Math.random()<0.42?target:L[Math.floor(Math.random()*L.length)],isT=l[1]===target[1],my=gen,done=false;
+    var b=el("button","bub"+(Math.random()<0.3?" gold":""),l[0]),w=ar.clientWidth||300,h=ar.clientHeight||400;
+    b.type="button";b.lang="ar";b.setAttribute("aria-label",l[1]);b.style.left=Math.floor(Math.random()*(w-64)+2)+"px";
+    ar.appendChild(b);
+    var an=b.animate([{transform:"translateY(0)"},{transform:"translateY("+(h+70)+"px)"}],{duration:dur,easing:"linear"});
+    an.onfinish=function(){
+      if(done)return;done=true;b.remove();
+      if(isT&&my===gen)miss();
+    };
+    b.addEventListener("pointerdown",function(e){
+      e.preventDefault();
+      if(done||!alive||my!==gen)return;
+      done=true;
+      if(isT){
+        combo++;score+=10+Math.min(combo,5)*2;hits++;tone(1);sparks(b);b.remove();hud();
+        if(hits%3===0){pick();dur=Math.max(2200,dur-220);gap=Math.max(520,gap-50);restart();}
+      }else{
+        an.pause();b.classList.add("pop-bad");setTimeout(function(){b.remove();},220);miss();
+      }
+    });
+  }
+  gmStop=function(){alive=false;clearInterval(timer);};
+  pick();hud();restart();spawn();
+}
+function gmTF(){
+  var f=gmFrame(),sc=el("span","chip","স্কোর ০"),tm=el("span","chip gold",""),bar=el("div","bar"),bi=el("i"),card=el("div","tf-card"),a=el("span","ar"),nm=el("span","nm"),row=el("div","tf-row"),no=el("button","no","ভুল"),yes=el("button","yes","ঠিক");
+  var score=0,truth=true,endAt=Date.now()+30000,alive=true,timer=null,sx=null;
+  a.lang="ar";no.type="button";yes.type="button";bar.appendChild(bi);card.appendChild(a);card.appendChild(nm);row.appendChild(no);row.appendChild(yes);
+  f.hud.appendChild(sc);f.hud.appendChild(tm);f.hud.appendChild(f.back);f.box.appendChild(bar);f.box.appendChild(card);f.box.appendChild(row);
+  function next(){
+    var l=L[Math.floor(Math.random()*L.length)],hard=score>=8&&Math.random()<0.5&&l[0]!=="ا",o,x;
+    truth=Math.random()<0.5;
+    if(hard){
+      x=Math.floor(Math.random()*6);a.textContent=sylAr(l,x);
+      nm.textContent=truth?sylBn(l,x):sylBn(l,(x+1+Math.floor(Math.random()*5))%6);
+    }else{
+      a.textContent=l[0];
+      do{o=L[Math.floor(Math.random()*L.length)];}while(o[1]===l[1]);
+      nm.textContent=truth?l[1]:o[1];
+    }
+    card.classList.remove("in");card.classList.remove("bad");void card.offsetWidth;card.classList.add("in");
+  }
+  function ans(val){
+    if(!alive)return;
+    if(val===truth){score++;tone(1);sc.textContent="স্কোর "+bn(score);next();}
+    else{tone(0);next();card.classList.remove("in");void card.offsetWidth;card.classList.add("bad");}
+  }
+  no.addEventListener("click",function(){ans(false);});
+  yes.addEventListener("click",function(){ans(true);});
+  card.addEventListener("pointerdown",function(e){sx=e.clientX;});
+  card.addEventListener("pointerup",function(e){
+    if(sx===null)return;
+    var dx=e.clientX-sx;sx=null;
+    if(dx>50)ans(true);else if(dx<-50)ans(false);
+  });
+  timer=gmClock(tm,bi,function(){return endAt;},function(){if(!alive)return;alive=false;gmOver("b",score,"ঠিক না ভুল",gmTF);});
+  gmStop=function(){alive=false;clearInterval(timer);};
+  next();
+}
+function gmFind(){
+  var f=gmFrame(),sc=el("span","chip","স্কোর ০"),tm=el("span","chip gold",""),bar=el("div","bar"),bi=el("i"),pr=el("div","gm-prompt"),grid=el("div","grid9");
+  var score=0,endAt=Date.now()+30000,alive=true,timer=null;
+  bar.appendChild(bi);
+  f.hud.appendChild(sc);f.hud.appendChild(tm);f.hud.appendChild(f.back);f.box.appendChild(bar);f.box.appendChild(pr);f.box.appendChild(grid);
+  function next(){
+    var pool=shuffle(L.slice()),t=pool[0],cells=[t],i;
+    for(i=1;cells.length<9;i++){if(pool[i][1]!==t[1])cells.push(pool[i]);}
+    shuffle(cells);
+    pr.textContent="";pr.appendChild(document.createTextNode("খুঁজে বের করো: "));pr.appendChild(el("b",null,t[1]));
+    grid.textContent="";
+    cells.forEach(function(c){
+      var b=el("button",null,c[0]);b.type="button";b.lang="ar";b.setAttribute("aria-label",c[1]);
+      b.addEventListener("click",function(){
+        if(!alive)return;
+        if(c===t){score++;tone(1);sparks(b);sc.textContent="স্কোর "+bn(score);next();}
+        else{tone(0);endAt-=2000;b.classList.remove("bad");void b.offsetWidth;b.classList.add("bad");}
+      });
+      grid.appendChild(b);
+    });
+  }
+  timer=gmClock(tm,bi,function(){return endAt;},function(){if(!alive)return;alive=false;gmOver("c",score,"হরফ খোঁজো",gmFind);});
+  gmStop=function(){alive=false;clearInterval(timer);};
+  next();
+}
+var GLIST=[
+["a","হরফ ধরো","উপর থেকে পড়তে থাকা হরফের মধ্যে ঠিকটিতে চাপ দাও। তিনবার ফসকালে খেলা শেষ।",gmFall],
+["b","ঠিক না ভুল","কার্ডের হরফ আর নাম মিলেছে কি? ৩০ সেকেন্ডে যত পারো উত্তর দাও।",gmTF],
+["c","হরফ খোঁজো","নয়টি ঘরের মধ্যে বলা হরফটি খুঁজে বের করো। ভুল করলে ২ সেকেন্ড কাটা যায়।",gmFind]
+];
+function gmHome(){
+  gmEnd();
+  var b=$("gmBody"),m=el("div","aro-menu");b.textContent="";
+  GLIST.forEach(function(g,i){
+    var c=el("button","aro-opt"),t=el("span");c.type="button";
+    c.appendChild(el("span","n",bn(i+1)));
+    t.appendChild(el("b",null,g[1]));t.appendChild(el("small",null,g[2]+(GM[g[0]]?" সেরা স্কোর "+bn(GM[g[0]])+"।":"")));
+    c.appendChild(t);
+    c.addEventListener("click",function(){tone(3);g[3]();});
+    m.appendChild(c);
+  });
+  b.appendChild(m);
+}
+window.addEventListener("hashchange",function(){var h=location.hash;if(h!=="#games"&&h!=="#jhotpot"&&gmStop){gmHome();}});
+gmHome();
+
 /* ---------- path: steps tick themselves from real activity ---------- */
 var PKEY="sabak-prog",P={q:{},fat:[],ws:[],so:[],nz:0,ex:{}};
 try{var ps0=JSON.parse(localStorage.getItem(PKEY)||"null");if(ps0){["q","fat","ws","so","nz","ex"].forEach(function(k){if(ps0[k]!==undefined&&ps0[k]!==null)P[k]=ps0[k];});}}catch(e){}
@@ -1578,7 +1772,7 @@ document.addEventListener("keydown",function(e){if(e.key==="Escape")$("sheet").h
 aroHome(false);
 
 /* ---------- phone app screens ---------- */
-var SCREEN={horof:"horof",tofat:"horof",harakat:"horof",niyom:"horof",exam:"quiz",quiz:"quiz",jhotpot:"jhotpot",path:"path",aro:"aro"};
+var SCREEN={horof:"horof",tofat:"horof",harakat:"horof",niyom:"horof",exam:"quiz",quiz:"quiz",jhotpot:"jhotpot",games:"jhotpot",path:"path",aro:"aro"};
 var mq=window.matchMedia("(max-width:720px)");
 function route(){
   var h=(location.hash||"#horof").slice(1), s=SCREEN[h]||"horof", app=mq.matches;
